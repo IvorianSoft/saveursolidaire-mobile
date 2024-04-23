@@ -11,6 +11,7 @@ export const search = async address => {
         params: {
           latitude: location[0].lat,
           longitude: location[0].long,
+          radius: 10000,
         },
       },
     );

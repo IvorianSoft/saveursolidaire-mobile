@@ -15,63 +15,38 @@ const Home = ({navigation}) => {
   // Dummy Datas
 
   const initialCurrentLocation = {
-    streetName: 'Kuching',
+    streetName: 'Lille',
     gps: {
-      latitude: 1.5496614931250685,
-      longitude: 110.36381866919922,
+      latitude: 50.633333,
+      longitude: 3.066667,
     },
   };
 
   const categoryData = [
     {
       id: 1,
-      name: 'Rice',
-      icon: icons.rice_bowl,
+      name: 'Market',
+      icon: icons.market,
     },
     {
       id: 2,
-      name: 'Noodles',
-      icon: icons.noodle,
+      name: 'Bakery',
+      icon: icons.bakery,
     },
     {
       id: 3,
-      name: 'Hot Dogs',
-      icon: icons.hotdog,
+      name: 'Florist',
+      icon: icons.florist,
     },
     {
       id: 4,
-      name: 'Salads',
-      icon: icons.salad,
+      name: 'Grocery',
+      icon: icons.grocery,
     },
     {
       id: 5,
-      name: 'Burgers',
-      icon: icons.hamburger,
-    },
-    {
-      id: 6,
-      name: 'Pizza',
-      icon: icons.pizza,
-    },
-    {
-      id: 7,
-      name: 'Snacks',
-      icon: icons.fries,
-    },
-    {
-      id: 8,
-      name: 'Sushi',
-      icon: icons.sushi,
-    },
-    {
-      id: 9,
-      name: 'Desserts',
-      icon: icons.donut,
-    },
-    {
-      id: 10,
-      name: 'Drinks',
-      icon: icons.drink,
+      name: 'Fast food',
+      icon: icons.food,
     },
   ];
 
@@ -89,6 +64,7 @@ const Home = ({navigation}) => {
       priceRating: affordable,
       photo: images.burger_store_1,
       duration: '30 - 45 min',
+      basketToSave: 5,
       location: {
         latitude: 1.5347282806345879,
         longitude: 110.35632207358996,
@@ -355,22 +331,9 @@ const Home = ({navigation}) => {
   function renderHeader() {
     return (
       <View style={{flexDirection: 'row', height: 50}}>
-        <TouchableOpacity
-          style={{
-            width: 50,
-            paddingLeft: SIZES.padding * 2,
-            justifyContent: 'center',
-          }}>
-          <Image
-            source={icons.nearby}
-            resizeMode="contain"
-            style={{
-              width: 30,
-              height: 30,
-            }}
-          />
-        </TouchableOpacity>
-
+        <Text style={{...FONTS.h2, marginTop: 10}}>
+          Welcome to Saveur Solidaire
+        </Text>
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <View
             style={{
@@ -384,22 +347,6 @@ const Home = ({navigation}) => {
             <Text style={{...FONTS.h3}}>{currentLocation.streetName}</Text>
           </View>
         </View>
-
-        <TouchableOpacity
-          style={{
-            width: 50,
-            paddingRight: SIZES.padding * 2,
-            justifyContent: 'center',
-          }}>
-          <Image
-            source={icons.basket}
-            resizeMode="contain"
-            style={{
-              width: 30,
-              height: 30,
-            }}
-          />
-        </TouchableOpacity>
       </View>
     );
   }
@@ -457,8 +404,9 @@ const Home = ({navigation}) => {
 
     return (
       <View style={{padding: SIZES.padding * 2}}>
-        <Text style={{...FONTS.h1}}>Main</Text>
-        <Text style={{...FONTS.h1}}>Categories</Text>
+        <Text style={{fontFamily: 'Lato', ...FONTS.h2}}>
+          Your stores by categories
+        </Text>
 
         <FlatList
           data={categories}
@@ -473,6 +421,7 @@ const Home = ({navigation}) => {
   }
 
   function renderStoreList() {
+    // @ts-ignore
     const renderItem = ({item}) => (
       <TouchableOpacity
         style={{marginBottom: SIZES.padding * 2}}
@@ -510,7 +459,57 @@ const Home = ({navigation}) => {
               justifyContent: 'center',
               ...styles.shadow,
             }}>
-            <Text style={{...FONTS.h4}}>{item.duration}</Text>
+            <Text style={{...FONTS.h4}}>{item.price} XOF</Text>
+          </View>
+
+          <View
+            style={{
+              position: 'absolute',
+              top: 5,
+              right: 10,
+              height: 20,
+              backgroundColor:
+                item.basketToSave > 0 ? COLORS.lightGreen : COLORS.white,
+              width: SIZES.width * 0.3,
+              borderTopRightRadius: SIZES.radius,
+              borderBottomLeftRadius: SIZES.radius,
+              borderBottomRightRadius: SIZES.radius,
+              borderTopLeftRadius: SIZES.radius,
+              alignItems: 'center',
+              justifyContent: 'center',
+              ...styles.shadow,
+            }}>
+            <Text style={{...FONTS.body4}}>
+              {item.basketToSave} {item.basketToSave > 1 ? 'baskets' : 'basket'}{' '}
+              to save
+            </Text>
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              top: 5,
+              left: 10,
+              height: 40,
+              width: 40,
+              backgroundColor: COLORS.white,
+              borderTopRightRadius: SIZES.radius,
+              borderBottomLeftRadius: SIZES.radius,
+              borderBottomRightRadius: SIZES.radius,
+              borderTopLeftRadius: SIZES.radius,
+              alignItems: 'center',
+              justifyContent: 'center',
+              ...styles.shadow,
+            }}>
+            <TouchableOpacity onPress={() => console.log('Favoris')}>
+              <Image
+                source={item.isFavorite ? icons.star : icons.starOutline}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -521,6 +520,7 @@ const Home = ({navigation}) => {
           style={{
             marginTop: SIZES.padding,
             flexDirection: 'row',
+            alignItems: 'center',
           }}>
           {/* Rating */}
           <Image
@@ -538,33 +538,17 @@ const Home = ({navigation}) => {
           <View
             style={{
               flexDirection: 'row',
-              marginLeft: 10,
             }}>
             {item.categories.map(categoryId => {
               return (
                 <View style={{flexDirection: 'row'}} key={categoryId}>
+                  <Text style={{...FONTS.h3, color: COLORS.darkgray}}> . </Text>
                   <Text style={{...FONTS.body3}}>
                     {getCategoryNameById(categoryId)}
                   </Text>
-                  <Text style={{...FONTS.h3, color: COLORS.darkgray}}> . </Text>
                 </View>
               );
             })}
-
-            {/* Price */}
-            {[1, 2, 3].map(priceRating => (
-              <Text
-                key={priceRating}
-                style={{
-                  ...FONTS.body3,
-                  color:
-                    priceRating <= item.priceRating
-                      ? COLORS.black
-                      : COLORS.darkgray,
-                }}>
-                $
-              </Text>
-            ))}
           </View>
         </View>
       </TouchableOpacity>

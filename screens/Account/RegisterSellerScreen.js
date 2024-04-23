@@ -49,7 +49,6 @@ function RegisterScreen({navigation}) {
           initialValues={{
             name: '',
             email: '',
-            phoneNumber: '',
             password: '',
             confirmPassword: '',
           }}
