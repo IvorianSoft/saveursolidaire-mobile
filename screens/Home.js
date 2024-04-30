@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 
 import {icons, images, SIZES, COLORS, FONTS} from '../constants';
+import Location from '../components/Location';
+import Card from '../components/Card';
+import MainCategory from '../components/MainCategory';
 
 const Home = ({navigation}) => {
   // Dummy Datas
@@ -311,96 +314,30 @@ const Home = ({navigation}) => {
 
   function onSelectCategory(category) {
     //filter store
-    let storeList = storeData.filter(a => a.categories.includes(category.id));
+    if (selectedCategory && category.id === selectedCategory.id) {
+      setStores(storeData);
+      setSelectedCategory(null);
+    } else {
+      let storeList = storeData.filter(a => a.categories.includes(category.id));
 
-    setStores(storeList);
+      setStores(storeList);
 
-    setSelectedCategory(category);
-  }
-
-  function getCategoryNameById(id) {
-    let category = categories.filter(a => a.id == id);
-
-    if (category.length > 0) {
-      return category[0].name;
+      setSelectedCategory(category);
     }
-
-    return '';
   }
 
   function renderHeader() {
-    return (
-      <View style={{flexDirection: 'row', height: 50}}>
-        <Text style={{...FONTS.h2, marginTop: 10}}>
-          Welcome to Saveur Solidaire
-        </Text>
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <View
-            style={{
-              width: '70%',
-              height: '100%',
-              backgroundColor: COLORS.lightGray3,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: SIZES.radius,
-            }}>
-            <Text style={{...FONTS.h3}}>{currentLocation.streetName}</Text>
-          </View>
-        </View>
-      </View>
-    );
+    return <Location currentLocation={currentLocation} />;
   }
 
   function renderMainCategories() {
-    const renderItem = ({item}) => {
-      return (
-        <TouchableOpacity
-          style={{
-            padding: SIZES.padding,
-            paddingBottom: SIZES.padding * 2,
-            backgroundColor:
-              selectedCategory?.id == item.id ? COLORS.primary : COLORS.white,
-            borderRadius: SIZES.radius,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: SIZES.padding,
-            ...styles.shadow,
-          }}
-          onPress={() => onSelectCategory(item)}>
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 25,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor:
-                selectedCategory?.id == item.id
-                  ? COLORS.white
-                  : COLORS.lightGray,
-            }}>
-            <Image
-              source={item.icon}
-              resizeMode="contain"
-              style={{
-                width: 30,
-                height: 30,
-              }}
-            />
-          </View>
-
-          <Text
-            style={{
-              marginTop: SIZES.padding,
-              color:
-                selectedCategory?.id == item.id ? COLORS.white : COLORS.black,
-              ...FONTS.body5,
-            }}>
-            {item.name}
-          </Text>
-        </TouchableOpacity>
-      );
-    };
+    const renderItem = ({item}) => (
+      <MainCategory
+        category={item}
+        selectedCategory={selectedCategory}
+        onSelectCategory={onSelectCategory}
+      />
+    );
 
     return (
       <View style={{padding: SIZES.padding * 2}}>
@@ -423,135 +360,12 @@ const Home = ({navigation}) => {
   function renderStoreList() {
     // @ts-ignore
     const renderItem = ({item}) => (
-      <TouchableOpacity
-        style={{marginBottom: SIZES.padding * 2}}
-        onPress={() =>
-          navigation.navigate('Store', {
-            item,
-            currentLocation,
-          })
-        }>
-        {/* Image */}
-        <View
-          style={{
-            marginBottom: SIZES.padding,
-          }}>
-          <Image
-            source={item.photo}
-            resizeMode="cover"
-            style={{
-              width: '100%',
-              height: 200,
-              borderRadius: SIZES.radius,
-            }}
-          />
-
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              height: 50,
-              width: SIZES.width * 0.3,
-              backgroundColor: COLORS.white,
-              borderTopRightRadius: SIZES.radius,
-              borderBottomLeftRadius: SIZES.radius,
-              alignItems: 'center',
-              justifyContent: 'center',
-              ...styles.shadow,
-            }}>
-            <Text style={{...FONTS.h4}}>{item.price} XOF</Text>
-          </View>
-
-          <View
-            style={{
-              position: 'absolute',
-              top: 5,
-              right: 10,
-              height: 20,
-              backgroundColor:
-                item.basketToSave > 0 ? COLORS.lightGreen : COLORS.white,
-              width: SIZES.width * 0.3,
-              borderTopRightRadius: SIZES.radius,
-              borderBottomLeftRadius: SIZES.radius,
-              borderBottomRightRadius: SIZES.radius,
-              borderTopLeftRadius: SIZES.radius,
-              alignItems: 'center',
-              justifyContent: 'center',
-              ...styles.shadow,
-            }}>
-            <Text style={{...FONTS.body4}}>
-              {item.basketToSave} {item.basketToSave > 1 ? 'baskets' : 'basket'}{' '}
-              to save
-            </Text>
-          </View>
-          <View
-            style={{
-              position: 'absolute',
-              top: 5,
-              left: 10,
-              height: 40,
-              width: 40,
-              backgroundColor: COLORS.white,
-              borderTopRightRadius: SIZES.radius,
-              borderBottomLeftRadius: SIZES.radius,
-              borderBottomRightRadius: SIZES.radius,
-              borderTopLeftRadius: SIZES.radius,
-              alignItems: 'center',
-              justifyContent: 'center',
-              ...styles.shadow,
-            }}>
-            <TouchableOpacity onPress={() => console.log('Favoris')}>
-              <Image
-                source={item.isFavorite ? icons.star : icons.starOutline}
-                resizeMode="contain"
-                style={{
-                  width: 30,
-                  height: 30,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Store Info */}
-        <Text style={{...FONTS.body2}}>{item.name}</Text>
-
-        <View
-          style={{
-            marginTop: SIZES.padding,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          {/* Rating */}
-          <Image
-            source={icons.star}
-            style={{
-              height: 20,
-              width: 20,
-              tintColor: COLORS.primary,
-              marginRight: 10,
-            }}
-          />
-          <Text style={{...FONTS.body3}}>{item.rating}</Text>
-
-          {/* Categories */}
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            {item.categories.map(categoryId => {
-              return (
-                <View style={{flexDirection: 'row'}} key={categoryId}>
-                  <Text style={{...FONTS.h3, color: COLORS.darkgray}}> . </Text>
-                  <Text style={{...FONTS.body3}}>
-                    {getCategoryNameById(categoryId)}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
-        </View>
-      </TouchableOpacity>
+      <Card
+        store={item}
+        navigation={navigation}
+        currentLocation={currentLocation}
+        categories={categories}
+      />
     );
 
     return (
