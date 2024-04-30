@@ -22,7 +22,7 @@ function LoginScreen({navigation}) {
       //log
       console.log('loginSuccessful:', loginSuccessful);
       if (loginSuccessful) {
-        navigation.reset({index: 0, routes: [{name: 'Home'}]});
+        navigation.reset({index: 0, routes: [{name: 'HomeTabs'}]});
       }
     } catch (error) {
       console.error('Error during login:', error);

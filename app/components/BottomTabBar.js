@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
     return (
         <Tab.Navigator style={styles.tab}>
-            <Tab.Screen name="Home" component={HomeScreen} options={
+            <Tab.Screen name="HomeTabs" component={HomeScreen} options={
                 {
                     tabBarLabel: 'Home',
                     tabBarIcon: ({ color }) => (
