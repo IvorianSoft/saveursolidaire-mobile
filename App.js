@@ -7,6 +7,7 @@ import LoginScreen from "./app/screens/Account/LoginScreen";
 import {ForgotPasswordScreen, RegisterScreen} from "./app/screens";
 import MyTabs from "./app/components/BottomTabBar";
 import RegisterSellerScreen from "./app/screens/Seller/RegisterScreen";
+import SellerBottomTabBar from "./app/components/SellerBottomTabBar";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,12 +27,13 @@ export default function App() {
 
     return (
         <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+        <Stack.Navigator initialRouteName="SellerHomeTabs" screenOptions={{headerShown: false}}>
             <Stack.Screen name="Login" component={LoginScreen}/>
             <Stack.Screen name="Register" component={RegisterScreen}/>
             <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}/>
             <Stack.Screen name="RegisterSeller" component={RegisterSellerScreen}/>
             <Stack.Screen name="HomeTabs" component={MyTabs}/>
+            <Stack.Screen name="SellerHomeTabs" component={SellerBottomTabBar}/>
         </Stack.Navigator>
         </NavigationContainer>
     );

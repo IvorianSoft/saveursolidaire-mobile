@@ -9,6 +9,7 @@ import SubmitButton from '../../components/forms/SubmitButton';
 
 import {signIn} from '../../services/auth/SignInService';
 import colors from '../../config/colors';
+import {getUser} from "../../storage/UserStorage";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label('Email'),
@@ -22,7 +23,13 @@ function LoginScreen({navigation}) {
       //log
       console.log('loginSuccessful:', loginSuccessful);
       if (loginSuccessful) {
-        navigation.reset({index: 0, routes: [{name: 'HomeTabs'}]});
+        const userConnected = await getUser();
+        console.log('userConnected:', userConnected);
+        if (userConnected && userConnected.role.name === 'SELLER') {
+          navigation.reset({index: 0, routes: [{name: 'SellerHomeTabs'}]});
+        }else{
+            navigation.reset({index: 0, routes: [{name: 'HomeTabs'}]});
+        }
       }
     } catch (error) {
       console.error('Error during login:', error);
