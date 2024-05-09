@@ -1,5 +1,6 @@
 const API_PROD_URL = 'https://api-saveursolidaire.ivoriandev.com';
-const API_DEV_URL = 'http://192.168.1.62:8080';
+//const API_DEV_URL = 'http://192.168.1.62:8080';
+const API_DEV_URL = 'http://10.238.16.65:8080';
 
 const VERSION = 'v1'
 

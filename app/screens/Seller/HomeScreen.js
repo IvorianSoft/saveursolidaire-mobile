@@ -11,20 +11,31 @@ function HomeScreen({navigation}) {
     const [store, setStore] = useState({});
 
     useEffect(() => {
-        const getStoreData = async () => {
-            const store = await getStore();
-            setStore(store);
-        }
-
-        const getUserData = async () => {
-            const user = await getUser();
-            setUser(user);
-        }
-
         getStoreData();
-
         getUserData();
     }, []);
+
+    async function getStoreData() {
+        const store = await getStore();
+        setStore(store);
+
+        if (isEmpty(store)) {
+            navigation.reset({index: 0, routes: [{name: 'Login'}]});
+        }
+    }
+
+    async function getUserData() {
+        const user = await getUser();
+        setUser(user);
+
+        if (isEmpty(user)) {
+            navigation.reset({index: 0, routes: [{name: 'Login'}]});
+        }
+    }
+
+    function isEmpty(obj) {
+        return Object.keys(obj).length === 0;
+    }
 
     // ===============================
     return (
@@ -42,7 +53,7 @@ function HomeScreen({navigation}) {
                     </Card>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('Account')} style={styles.cardContainer}>
+                <TouchableOpacity onPress={() => navigation.navigate('SellerBasket')} style={styles.cardContainer}>
                     <Card containerStyle={styles.card}>
                         <Card.Title>Baskets</Card.Title>
                         <Card.Divider/>

@@ -7,6 +7,7 @@ import {MaterialCommunityIcons} from "@expo/vector-icons";
 import HomeScreen from "../screens/Seller/HomeScreen";
 import StoreInformationScreen from "../screens/Seller/Store/StoreInformationScreen";
 import SellerLocationScreen from "../screens/Seller/Store/SellerLocationScreen";
+import SellerBasketListScreen from "../screens/Seller/Basket/SellerBasketListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +44,13 @@ function SellerBottomTabBar() {
                     tabBarButton: () => null,
                     tabBarLabel: 'Location',
                     headerTitle: 'Store Location',
+                }
+            }/>
+            <Tab.Screen name="SellerBasket" component={SellerBasketListScreen} options={
+                {
+                    tabBarButton: () => null,
+                    tabBarLabel: 'Baskets',
+                    headerTitle: 'Baskets',
                 }
             }/>
         </Tab.Navigator>

@@ -1,11 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import Screen from "../../../components/Screen";
-import {Platform, StyleSheet, Text, View} from "react-native";
+import {
+    Alert,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
+} from "react-native";
 import colors from "../../../config/colors";
 import {Icon, ListItem, SearchBar} from "react-native-elements";
 import {getAddressInfoFromSearchString} from "../../../services/LocationService";
 import AppButton from "../../../components/AppButton";
 import {updateStoreLocation} from "../../../services/seller/StoreService";
+import MapView, {Marker} from "react-native-maps";
 
 function SellerLocationScreen({route}) {
     const {store} = route.params;
@@ -58,15 +68,33 @@ function SellerLocationScreen({route}) {
             alert('Please select a valid address');
             return;
         }
-        const updatedStore = await updateStoreLocation(storeDetails.id, formatAddressObject(selectedAddress));
-        if (updatedStore) {
-            alert('Store location updated successfully');
-            setStoreDetails(updatedStore);
-            route.params.setStore(updatedStore);
-        } else {
-            alert('Failed to update store location');
-        }
+        Alert.alert(
+            'Update store location',
+            'Are you sure you want to update the store location?\nYour store location will be updated to : ' + formatAddress(selectedAddress),
+            [
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        const updatedStore = await updateStoreLocation(storeDetails.id, formatAddressObject(selectedAddress));
+                        if (updatedStore) {
+                            alert('Store location updated successfully');
+                            setStoreDetails(updatedStore);
+                            route.params.setStore(updatedStore);
+                            setAddressItems([])
+                            setAddress('')
+                            setSelectedAddress(null)
+                        } else {
+                            alert('Failed to update store location');
+                        }
+                    }
+                },
+                {
+                    text: 'No',
+                }
+            ]);
     }
+
+    const calculateHeight = () => Array.isArray(addressItems) && addressItems.length > 0 ? '60%' : '62%';
 
     return (
         <Screen>
@@ -89,20 +117,7 @@ function SellerLocationScreen({route}) {
                 round={true}
                 showCancel={true}
                 searchIcon={<Icon name='map-pin' type='font-awesome' iconStyle={{color: colors.medium}} size={15}/>}
-                clearIcon={
-                    <View style={{ position: 'absolute', right: -30, top: 10 }}>
-                        <Icon
-                            name='times'
-                            type='font-awesome'
-                            iconStyle={{color: colors.red}}
-                            size={20}
-                            onPress={() => {
-                                setAddress('');
-                                setAddressItems([]);
-                            }}
-                        />
-                    </View>
-                }
+                clearIcon={null}
                 onTouchCancel={() => {
                     setAddress('');
                     setAddressItems([]);
@@ -122,37 +137,55 @@ function SellerLocationScreen({route}) {
                     color: colors.dark,
                 }}
                 textContentType={'fullStreetAddress'}
-                onPressIn={
-                    () => {
-                        setAddressItems([]);
-                        setAddress('')
-                        setSelectedAddress(null)
-                    }
-                }
+                onPressIn={() => {
+                    setAddressItems([])
+                    setAddress('')
+                    setSelectedAddress(null)
+                }}
             />
 
             {Array.isArray(addressItems) && addressItems.length > 0 ? (
-                addressItems.map((address) => (
-                    <ListItem
-                        key={address.key}
-                        bottomDivider
-                        onPress={() => setSelectedAddress(JSON.parse(address.value))}
-                    >
-                        <ListItem.Content>
-                            <ListItem.Title>{address.label}</ListItem.Title>
-                        </ListItem.Content>
-                        <ListItem.Chevron/>
-                    </ListItem>
-                ))
+                <ScrollView style={{height: '10%'}}>
+                    {addressItems.map((address) => (
+                        <ListItem
+                            key={address.key}
+                            bottomDivider
+                            onPress={() => setSelectedAddress(JSON.parse(address.value))}
+                        >
+                            <ListItem.Content>
+                                <ListItem.Title>{address.label}</ListItem.Title>
+                            </ListItem.Content>
+                            <ListItem.Chevron/>
+                        </ListItem>
+                    ))}
+                </ScrollView>
             ) : null}
 
-            {selectedAddress ? (
+            <MapView
+                style={{ width: '100%', height: calculateHeight() }}
+                region={{
+                    latitude: parseFloat(selectedAddress ? selectedAddress.lat : storeDetails.location.latitude),
+                    longitude: parseFloat(selectedAddress ? selectedAddress.lon : storeDetails.location.longitude),
+                    latitudeDelta: 0.005,
+                    longitudeDelta: 0.005,
+                }}
+            >
+                <Marker
+                    coordinate={{
+                        latitude: parseFloat(selectedAddress ? selectedAddress.lat : storeDetails.location.latitude),
+                        longitude: parseFloat(selectedAddress ? selectedAddress.lon : storeDetails.location.longitude),
+                    }}
+                    title={selectedAddress ? selectedAddress.address.name : storeDetails.location.address}
+                    description={selectedAddress ? selectedAddress.address.road : storeDetails.location.address}
+                />
+            </MapView>
+
+            {Array.isArray(addressItems) && addressItems.length === 0 ? (
                 <View>
                     {/* Submit button */}
-                    <AppButton title="Update location" onPress={() => updateLocation()} style={styles.button} />
+                    <AppButton title="Update location" onPress={() => updateLocation()} style={styles.button} disabled={selectedAddress === null}/>
                 </View>
             ) : null}
-
 
         </Screen>
     );

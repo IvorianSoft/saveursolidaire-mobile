@@ -1,10 +1,14 @@
 import React from 'react';
 import {Button, Platform, StyleSheet, TouchableOpacity, Text} from "react-native";
 import colors from "../config/colors";
+import {Icon} from "react-native-elements";
 
-function AppButton({title, onPress, style}) {
+function AppButton({title, onPress, style, disabled = false, icon}) {
     return (
-        <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
+
+        <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={disabled}>
+            {/*if icon is provided, show icon*/}
+            {icon && <Icon name={icon} size={30} iconStyle={{color: colors.white}} />}
             <Text style={styles.text}>{title}</Text>
         </TouchableOpacity>
     );
