@@ -8,6 +8,7 @@ import HomeScreen from "../screens/Seller/HomeScreen";
 import StoreInformationScreen from "../screens/Seller/Store/StoreInformationScreen";
 import SellerLocationScreen from "../screens/Seller/Store/SellerLocationScreen";
 import SellerBasketListScreen from "../screens/Seller/Basket/SellerBasketListScreen";
+import SellerAddBasketFormScreen from "../screens/Seller/Basket/SellerAddBasketFormScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -51,6 +52,13 @@ function SellerBottomTabBar() {
                     tabBarButton: () => null,
                     tabBarLabel: 'Baskets',
                     headerTitle: 'Baskets',
+                }
+            }/>
+            <Tab.Screen name="AddBasket" component={SellerAddBasketFormScreen} options={
+                {
+                    tabBarButton: () => null,
+                    tabBarLabel: 'Add Basket',
+                    headerTitle: 'Add Basket',
                 }
             }/>
         </Tab.Navigator>

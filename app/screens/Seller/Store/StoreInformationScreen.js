@@ -45,7 +45,7 @@ function StoreInformationScreen({route}) {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <ScrollView style={styles.container}>
+                    <ScrollView contentContainerStyle={{minHeight: '120%'}} style={styles.container}>
                             <AppForm
                                 initialValues={
                                     {
@@ -120,8 +120,9 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     submitButtonContainer: {
-        marginTop: 20,
+        marginTop: 10,
         width: '50%',
+        height: 50,
         alignSelf: 'center',
     },
     warningText: {

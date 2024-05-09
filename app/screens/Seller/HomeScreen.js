@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import Screen from "../../components/Screen";
 import {getStore} from "../../storage/StoreStorage";
 import {getUser} from "../../storage/UserStorage";
 import {Card, Icon} from "react-native-elements";
+import Icons from "../../constants/icons";
 import colors from "../../config/colors";
+import icons from "../../constants/icons";
 
 function HomeScreen({navigation}) {
     const [user, setUser] = useState({});
@@ -49,7 +51,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Store Information</Card.Title>
                         <Card.Divider/>
-                        <Icon name='store' size={80} iconStyle={{color: colors.primary}}/>
+                        {Platform.OS === 'ios' ? <Icon name='store' size={80} iconStyle={{color: colors.primary}}/> : <Image source={icons.bakery} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
                     </Card>
                 </TouchableOpacity>
 
@@ -57,7 +59,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Baskets</Card.Title>
                         <Card.Divider/>
-                        <Icon name='shopping-basket' size={80} iconStyle={{color: colors.green}}/>
+                        {Platform.OS === 'ios' ? <Icon name='shopping-basket' size={80} iconStyle={{color: colors.green}}/> : <Image source={icons.basket} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
                     </Card>
                 </TouchableOpacity>
 
@@ -65,7 +67,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Orders</Card.Title>
                         <Card.Divider/>
-                        <Icon name='list' size={80} iconStyle={{color: colors.blue}}/>
+                        {Platform.OS === 'ios' ? <Icon name='list' size={80} iconStyle={{color: colors.blue}}/> : <Image source={icons.list} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
                     </Card>
                 </TouchableOpacity>
 
@@ -73,7 +75,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Location</Card.Title>
                         <Card.Divider/>
-                        <Icon name='location-on' size={80} iconStyle={{color: colors.orange}}/>
+                        {Platform.OS === 'ios' ? <Icon name='location-on' size={80} iconStyle={{color: colors.orange}}/> : <Image source={icons.location} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
                     </Card>
                 </TouchableOpacity>
             </ScrollView>

@@ -40,21 +40,40 @@ export const getBasketsList = async (id) => {
     }
 }
 
-const modelKeys = {
-    "id": "id",
-    "createdAt": "createdAt",
-    "updatedAt": "updatedAt",
-    "name": "name",
-    "description": "description",
-    "price": "price",
-    "quantity": "quantity",
-    "initialQuantity": "initialQuantity",
-    "image": {
-        "id": "image.id",
-        "createdAt": "image.createdAt",
-        "updatedAt": "image.updatedAt",
-        "name": "image.name",
-        "type": "image.type",
-        "url": "image.url"
+export const addBasket = async (basket) => {
+    try {
+        const headers = await getHeader();
+        const response = await axios.post(
+            `${API_URL}/baskets`,
+            basket,
+            {
+                headers: headers,
+            },
+        );
+        console.log("addBasket response.data:", response.data)
+        return response.data;
+    } catch (error) {
+        console.log("Error during addBasket:", error);
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            let message = null;
+            if (error.response.data){
+                const obj = error.response.data;
+                message = '';
+                for (const key in obj) {
+                    message += `${key}: ${obj[key]}\n`;
+                }
+            }
+
+            alert(error.response.data.message || message || 'An error occurred');
+        } else if (error.request) {
+            console.log(error.request);
+            alert('No response received from the server');
+        } else {
+            console.log('Error', error.message);
+            alert(error.message || 'An error occurred');
+        }
     }
 }

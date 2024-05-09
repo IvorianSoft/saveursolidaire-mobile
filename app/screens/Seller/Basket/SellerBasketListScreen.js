@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Screen from "../../../components/Screen";
-import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Button, FlatList, ScrollView, StyleSheet, Text, View} from "react-native";
 import {getStore} from "../../../storage/StoreStorage";
 import {getBasketsList} from "../../../services/seller/BasketService";
 import AppButton from "../../../components/AppButton";
@@ -21,13 +21,23 @@ function SellerBasketListScreen({navigation}) {
 
     useEffect(() => {
         getStoreData();
+    }, []);
 
+    useEffect(() => {
         if (store) {
             getBasketsList(store.id).then((baskets) => {
                 setBaskets(baskets);
             });
         }
-    }, []);
+    }, [store]);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getStoreData();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     function isEmpty(obj) {
         return Object.keys(obj).length === 0;
@@ -41,23 +51,25 @@ function SellerBasketListScreen({navigation}) {
                 <AppButton
                     style={styles.addBasketButton}
                     title={'Add Basket'}
-                    onPress={() => console.log('Add Basket')}
+                    onPress={() => navigation.navigate('AddBasket')}
                     icon={'add-circle-outline'}
                 />
             </View>
-            <ScrollView>
+
+            <ScrollView contentInset={{bottom: 80}}>
                 {
                     baskets.map((basket, index) => (
                         <ListItem
                             key={index}
                             bottomDivider
                             onPress={() => console.log('Basket clicked: ' + basket.id)}
+                            style={styles.item}
                         >
                             <ListItem.Content>
                                 <ListItem.Title>{basket.name}</ListItem.Title>
                                 <ListItem.Subtitle>{basket.description}</ListItem.Subtitle>
-                                <ListItem.Subtitle>{basket.price}</ListItem.Subtitle>
-                                <ListItem.Subtitle>{basket.quantity}</ListItem.Subtitle>
+                                <ListItem.Subtitle>Price : {basket.price}</ListItem.Subtitle>
+                                <ListItem.Subtitle>Quantity: {basket.quantity}</ListItem.Subtitle>
                                 <ListItem.Subtitle>{basket.category}</ListItem.Subtitle>
                             </ListItem.Content>
                             <ListItem.Chevron/>
@@ -84,6 +96,13 @@ const styles = StyleSheet.create({
         width: '30%',
         height: 50,
     },
+    item: {
+        padding: 10,
+        fontSize: 18,
+    },
+    containerStyle: {
+        flexGrow: 1,
+    }
 });
 
 export default SellerBasketListScreen;
