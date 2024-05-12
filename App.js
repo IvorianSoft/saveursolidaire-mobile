@@ -8,6 +8,7 @@ import {ForgotPasswordScreen, RegisterScreen} from "./app/screens";
 import MyTabs from "./app/components/BottomTabBar";
 import RegisterSellerScreen from "./app/screens/Seller/RegisterScreen";
 import SellerBottomTabBar from "./app/components/SellerBottomTabBar";
+import 'react-native-reanimated';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +18,10 @@ export default function App() {
     const checkUser = async () => {
       const user = await getUser();
       if (user) {
-        setInitialRouteName('HomeTabs');
+          if (user.role.name === 'SELLER') {
+              setInitialRouteName('SellerHomeTabs');
+          }
+          setInitialRouteName('HomeTabs');
       }else {
         setInitialRouteName('Login');
       }

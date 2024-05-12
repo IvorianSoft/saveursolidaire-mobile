@@ -9,6 +9,7 @@ import StoreInformationScreen from "../screens/Seller/Store/StoreInformationScre
 import SellerLocationScreen from "../screens/Seller/Store/SellerLocationScreen";
 import SellerBasketListScreen from "../screens/Seller/Basket/SellerBasketListScreen";
 import SellerAddBasketFormScreen from "../screens/Seller/Basket/SellerAddBasketFormScreen";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +20,7 @@ function SellerBottomTabBar() {
                 {
                     tabBarLabel: 'Home',
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="home-circle" color={color} size={35} />
+                        <Icon name="home" color={color} size={35} />
                     ),
                     headerTitle: 'Home',
                 }
