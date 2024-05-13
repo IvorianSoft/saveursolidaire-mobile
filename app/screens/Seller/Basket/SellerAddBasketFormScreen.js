@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import AppFormField from "../../../components/forms/AppFormField";
 import SubmitButton from "../../../components/forms/SubmitButton";
 import {addBasket} from "../../../services/seller/BasketService";
+import {useFormikContext} from "formik";
 
 
 const validationSchema = Yup.object().shape({
@@ -21,6 +22,8 @@ function SellerAddBasketFormScreen({navigation}) {
     const [store, setStore] = useState(null);
     const [initialValues, setInitialValues] = useState(null);
 
+    const formik = useFormikContext();
+
     async function getStoreData() {
         const store = await getStore();
         setStore(store);
@@ -30,10 +33,6 @@ function SellerAddBasketFormScreen({navigation}) {
             navigation.reset({index: 0, routes: [{name: 'Login'}]});
         }
     }
-
-    useEffect( () => {
-        getStoreData();
-    }, []);
 
     useEffect(() => {
         if (store) {
@@ -59,7 +58,6 @@ function SellerAddBasketFormScreen({navigation}) {
         const unsubscribe = navigation.addListener('focus', () => {
             getStoreData();
         });
-
         return unsubscribe;
     }, [navigation]);
 

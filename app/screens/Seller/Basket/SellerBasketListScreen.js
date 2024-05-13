@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Screen from "../../../components/Screen";
-import {Button, FlatList, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Button, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {getStore} from "../../../storage/StoreStorage";
 import {getBasketsList} from "../../../services/seller/BasketService";
 import AppButton from "../../../components/AppButton";
 import {ListItem} from "react-native-elements";
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import colors from "../../../config/colors";
 
 function SellerBasketListScreen({navigation}) {
     const [store, setStore] = useState(null);
@@ -48,12 +51,12 @@ function SellerBasketListScreen({navigation}) {
         <Screen>
             <Text style={styles.headTitle}>You have {baskets.length} basket(s) in your store</Text>
             <View style={styles.buttonContainer}>
-                <AppButton
-                    style={styles.addBasketButton}
-                    title={'Add Basket'}
+                <TouchableOpacity
                     onPress={() => navigation.navigate('AddBasket')}
-                    icon={'add-circle-outline'}
-                />
+                >
+                    <FontAwesomeIcon icon={faPlusCircle} size={30} color={colors.primary}/>
+                </TouchableOpacity>
+
             </View>
 
             <ScrollView contentInset={{bottom: 80}}>
@@ -62,7 +65,7 @@ function SellerBasketListScreen({navigation}) {
                         <ListItem
                             key={index}
                             bottomDivider
-                            onPress={() => console.log('Basket clicked: ' + basket.id)}
+                            onPress={() => navigation.navigate('UpdateBasket', {basketId: basket.id})}
                             style={styles.item}
                         >
                             <ListItem.Content>
@@ -91,6 +94,8 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
         marginTop: 20,
+        flexDirection: 'row',
+        justifyContent: 'center',
     },
     addBasketButton: {
         width: '30%',

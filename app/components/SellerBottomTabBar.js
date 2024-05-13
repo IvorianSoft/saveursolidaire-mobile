@@ -10,6 +10,9 @@ import SellerLocationScreen from "../screens/Seller/Store/SellerLocationScreen";
 import SellerBasketListScreen from "../screens/Seller/Basket/SellerBasketListScreen";
 import SellerAddBasketFormScreen from "../screens/Seller/Basket/SellerAddBasketFormScreen";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faHome, faUser} from "@fortawesome/free-solid-svg-icons";
+import SellerUpdateBasketFormScreen from "../screens/Seller/Basket/SellerUpdateBasketFormScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,7 +23,7 @@ function SellerBottomTabBar() {
                 {
                     tabBarLabel: 'Home',
                     tabBarIcon: ({ color }) => (
-                        <Icon name="home" color={color} size={35} />
+                        <FontAwesomeIcon icon={faHome} color={color} style={{alignSelf: 'center'}}/>
                     ),
                     headerTitle: 'Home',
                 }
@@ -29,7 +32,7 @@ function SellerBottomTabBar() {
                 {
                     tabBarLabel: 'Account',
                     tabBarIcon: ({ color}) => (
-                        <MaterialCommunityIcons name="account-circle" color={color} size={35} />
+                        <FontAwesomeIcon icon={faUser} color={color} style={{alignSelf: 'center'}}/>
                     ),
                     headerTitle: 'My Profile',
                 }
@@ -60,6 +63,13 @@ function SellerBottomTabBar() {
                     tabBarButton: () => null,
                     tabBarLabel: 'Add Basket',
                     headerTitle: 'Add Basket',
+                }
+            }/>
+            <Tab.Screen name="UpdateBasket" component={SellerUpdateBasketFormScreen} options={
+                {
+                    tabBarButton: () => null,
+                    tabBarLabel: 'Update Basket',
+                    headerTitle: 'Update Basket',
                 }
             }/>
         </Tab.Navigator>

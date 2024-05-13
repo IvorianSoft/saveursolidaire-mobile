@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ScrollView, StyleSheet, Text, TouchableOpacity} from "react-native";
 import Screen from "../../components/Screen";
 import {getStore} from "../../storage/StoreStorage";
 import {getUser} from "../../storage/UserStorage";
-import {Card, Icon} from "react-native-elements";
-import Icons from "../../constants/icons";
+import {Card} from "react-native-elements";
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import {faStore, faBasketShopping, faList, faMapPin} from "@fortawesome/free-solid-svg-icons";
+import '@fortawesome/free-solid-svg-icons'
 import colors from "../../config/colors";
-import icons from "../../constants/icons";
 
 function HomeScreen({navigation}) {
     const [user, setUser] = useState({});
@@ -43,7 +44,7 @@ function HomeScreen({navigation}) {
     return (
         <Screen>
             <Text style={styles.headTitle}>
-                Welcome, {user.name} to <Text style={styles.boldText}>{store.name}</Text>
+                Welcome to <Text style={styles.boldText}>{store.name}</Text>, {user.name}
             </Text>
 
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -51,7 +52,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Store Information</Card.Title>
                         <Card.Divider/>
-                        {Platform.OS === 'ios' ? <Icon name='store' size={80} iconStyle={{color: colors.primary}}/> : <Image source={icons.bakery} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
+                        <FontAwesomeIcon icon={faStore} size={70} color={colors.primary} style={{alignSelf: 'center'}}/>
                     </Card>
                 </TouchableOpacity>
 
@@ -59,7 +60,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Baskets</Card.Title>
                         <Card.Divider/>
-                        {Platform.OS === 'ios' ? <Icon name='shopping-basket' size={80} iconStyle={{color: colors.green}}/> : <Image source={icons.basket} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
+                        <FontAwesomeIcon icon={faBasketShopping} size={70} color={colors.green} style={{alignSelf: 'center'}}/>
                     </Card>
                 </TouchableOpacity>
 
@@ -67,7 +68,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Orders</Card.Title>
                         <Card.Divider/>
-                        {Platform.OS === 'ios' ? <Icon name='list' size={80} iconStyle={{color: colors.blue}}/> : <Image source={icons.list} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
+                        <FontAwesomeIcon icon={faList} size={70} color={colors.blue} style={{alignSelf: 'center'}}/>
                     </Card>
                 </TouchableOpacity>
 
@@ -75,7 +76,7 @@ function HomeScreen({navigation}) {
                     <Card containerStyle={styles.card}>
                         <Card.Title>Location</Card.Title>
                         <Card.Divider/>
-                        {Platform.OS === 'ios' ? <Icon name='location-on' size={80} iconStyle={{color: colors.orange}}/> : <Image source={icons.location} style={{width: 60, height: 60, alignSelf: 'center'}}/>}
+                        <FontAwesomeIcon icon={faMapPin} size={70} color={colors.orange} style={{alignSelf: 'center'}}/>
                     </Card>
                 </TouchableOpacity>
             </ScrollView>
