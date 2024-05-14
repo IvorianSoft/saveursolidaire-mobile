@@ -92,6 +92,17 @@ function LoginScreen({navigation}) {
               Register
             </Text>
           </View>
+
+          <View style={styles.registerSellerContainer}>
+            <Text>You are a seller? </Text>
+            <Text
+              style={styles.register}
+              onPress={() =>
+                navigation.reset({index: 0, routes: [{name: 'RegisterSeller'}]})
+              }>
+              Register as a seller
+            </Text>
+          </View>
         </AppForm>
       </View>
     </Screen>
@@ -137,6 +148,10 @@ const styles = StyleSheet.create({
     height: 50,
   },
   submitButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  registerSellerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },

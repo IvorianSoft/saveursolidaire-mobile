@@ -7,4 +7,4 @@ const VERSION = 'v1'
 const API_PROD = `${API_PROD_URL}/${VERSION}`;
 const API_DEV = `${API_DEV_URL}/${VERSION}`;
 
-export const API_URL = API_DEV;
+export const API_URL = API_PROD;
