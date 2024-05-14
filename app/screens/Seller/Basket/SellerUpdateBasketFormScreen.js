@@ -5,13 +5,14 @@ import {
     getBasket,
     updateBasketDetails,
     updateBasketQuantity,
-    updateBasketStatus
+    updateBasketStatus, uploadBasketImage
 } from "../../../services/seller/BasketService";
 import AppForm from "../../../components/forms/AppForm";
 import AppFormField from "../../../components/forms/AppFormField";
 import SubmitButton from "../../../components/forms/SubmitButton";
 import * as Yup from "yup";
-import ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 
 const validationSchemaForUpdateQuantity = Yup.object().shape({
     quantity: Yup.number().required().min(1).label('Quantity'),
@@ -27,6 +28,7 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
     const {basketId} = route.params;
     const [basket, setBasket] = useState(null);
     const [isSwitchOn, setIsSwitchOn] = useState(false);
+    const [image, setImage] = useState(null);
 
 
     const fetchBasket = async (id) => {
@@ -35,6 +37,8 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
 
         // Set the switch to the status of the basket
         setIsSwitchOn(basket.isActive);
+
+        return basket;
     }
 
     const updateStatus = async (id) => {
@@ -75,7 +79,44 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
         );
     }
 
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
 
+        if (!result.canceled) {
+            //result.assets[0].uri
+            const manipResult = await manipulateAsync(
+                result.assets[0].uri,
+                [{resize: {width: 300}}],
+                { format: SaveFormat.JPEG }
+            );
+
+            setImage(manipResult.uri);
+
+            console.log('Image selected:', manipResult.uri)
+        }
+    };
+
+    useEffect(() => {
+        if (image) {
+            uploadBasketImage(basketId, image).then(
+                () => {
+                    fetchBasket(basketId).then(
+                        (basket) => {
+                            Alert.alert('Image uploaded', 'The image of the basket has been updated');
+                            setImage(null)
+                        }
+                    )
+                }
+            );
+        }
+    }
+    , [image]);
 
     return (basket && (
         <Screen>
@@ -96,21 +137,26 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
                     </View>
 
                     <View style={styles.upload}>
-                        <Text onPress={() => {console.log('Upload image')}}>
+                        <Text onPress={pickImage}>
                             Upload image
                         </Text>
                     </View>
                 </View>
 
                 <View style={styles.containerImage}>
-                    {/* DISPLAY THE IMAGE OF THE BASKET  basket?.image?.url */}
-                    <Image source={{uri: basket?.image?.url}} style={styles.image}/>
+                    <Image
+                        source={
+                            {
+                                uri: basket?.image?.url || image || 'https://static.thenounproject.com/png/1554489-200.png'
+                            }
+                        }
+                        style={styles.image}/>
                 </View>
 
                 {/* FORM TO UPDATE THE QUANTITY OF THE BASKET */}
                 <View style={styles.formUpdateQuantity}>
                     <AppForm
-                        initialValues={{quantity: basket?.quantity}}
+                        initialValues={{quantity: ''}}
                         onSubmit={(values, {resetForm}) => updateQuantity(values, resetForm)}
                         validationSchema={validationSchemaForUpdateQuantity}
                     >
@@ -120,6 +166,7 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
                                 name='quantity'
                                 placeholder={'Actual quantity: ' + basket?.quantity}
                                 keyboardType='numeric'
+                                defaultValue={basket?.quantity.toString()}
                             />
                         </View>
                         <View style={styles.buttonQuantity}>
@@ -133,10 +180,9 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
                     <AppForm
                         initialValues={
                             {
-                                id: basket?.id,
-                                name: basket?.name,
-                                description: basket?.description,
-                                price: basket?.price,
+                                name: '',
+                                description: '',
+                                price: ''
                             }
                         }
                         onSubmit={values => updateDetails(values)}

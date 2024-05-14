@@ -201,3 +201,52 @@ export const updateBasketDetails = async (id, basket) => {
         }
     }
 }
+
+export const uploadBasketImage = async (id, uri) => {
+    try {
+        const headers = await getHeader();
+        const formData = new FormData();
+        formData.append('file', {
+            uri: uri,
+            name: 'image.jpg',
+            type: 'image/jpeg',
+        });
+        const response = await axios.post(
+            `${API_URL}/baskets/${id}/image`,
+            formData,
+            {
+                headers: {
+                    ...headers,
+                    'Content-Type': 'multipart/form-data',
+                },
+            },
+        );
+        console.log("uploadBasketImage response.data:", response.data)
+        return response.data;
+    } catch (error) {
+        console.log("Error during uploadBasketImage:", error);
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            let message = null;
+            if (error.response.data){
+                const obj = error.response.data;
+                message = '';
+                for (const key in obj) {
+                    message += `${key}: ${obj[key]}\n`;
+                }
+            }
+
+            alert(error.response.data.message || message || 'An error occurred');
+        } else if (error.request) {
+            console.log(error.request);
+            alert('No response received from the server');
+        } else {
+            console.log('Error', error.message);
+            alert(error.message || 'An error occurred');
+        }
+    }
+}
+
+
