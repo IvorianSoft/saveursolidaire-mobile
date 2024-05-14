@@ -105,3 +105,99 @@ export const getBasket = async (id) => {
         }
     }
 }
+
+export const updateBasketStatus = async (id) => {
+    try {
+        const headers = await getHeader();
+        const response = await axios.put(
+            `${API_URL}/baskets/${id}/active-status`,
+            {},
+            {
+                headers: headers,
+            },
+        );
+        console.log("updateStatus response.data:", response.data)
+        return response.data;
+    } catch (error) {
+        console.log("Error during updateStatus:", error);
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            alert(error.response.data.message || 'An error occurred');
+        } else if (error.request) {
+            console.log(error.request);
+            alert('No response received from the server');
+        } else {
+            console.log('Error', error.message);
+            alert(error.message || 'An error occurred');
+        }
+    }
+}
+
+export const updateBasketQuantity = async (id, quantity) => {
+    try {
+        const headers = await getHeader();
+        const response = await axios.put(
+            `${API_URL}/baskets/${id}/quantity/${quantity}`,
+            {},
+            {
+                headers: headers,
+            },
+        );
+        console.log("updateQuantity response.data:", response.data)
+        return response.data;
+    } catch (error) {
+        console.log("Error during updateQuantity:", error);
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            alert(error.response.data.message || 'An error occurred');
+        } else if (error.request) {
+            console.log(error.request);
+            alert('No response received from the server');
+        } else {
+            console.log('Error', error.message);
+            alert(error.message || 'An error occurred');
+        }
+    }
+}
+
+export const updateBasketDetails = async (id, basket) => {
+    try {
+        const headers = await getHeader();
+        const response = await axios.put(
+            `${API_URL}/baskets/${id}`,
+            basket,
+            {
+                headers: headers,
+            },
+        );
+        console.log("updateBasketDetails response.data:", response.data)
+        return response.data;
+    } catch (error) {
+        console.log("Error during updateBasketDetails:", error);
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            let message = null;
+            if (error.response.data){
+                const obj = error.response.data;
+                message = '';
+                for (const key in obj) {
+                    message += `${key}: ${obj[key]}\n`;
+                }
+            }
+
+            alert(error.response.data.message || message || 'An error occurred');
+        } else if (error.request) {
+            console.log(error.request);
+            alert('No response received from the server');
+        } else {
+            console.log('Error', error.message);
+            alert(error.message || 'An error occurred');
+        }
+    }
+}

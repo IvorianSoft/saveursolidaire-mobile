@@ -20,27 +20,29 @@ function SellerBasketListScreen({navigation}) {
         if (isEmpty(store)) {
             navigation.reset({index: 0, routes: [{name: 'Login'}]});
         }
+
+        return store;
     }
 
     useEffect(() => {
-        getStoreData();
-    }, []);
-
-    useEffect(() => {
-        if (store) {
-            getBasketsList(store.id).then((baskets) => {
-                setBaskets(baskets);
-            });
-        }
-    }, [store]);
-
-    useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            getStoreData();
+            getStoreData().then(
+                (store) => getBasketsList(store.id).then(
+                    baskets => setBaskets(baskets)
+                )
+            );
         });
 
         return unsubscribe;
     }, [navigation]);
+
+    useEffect(() => {
+        getStoreData().then(
+            (store) => getBasketsList(store.id).then(
+                (baskets) => setBaskets(baskets)
+            )
+        );
+    }, []);
 
     function isEmpty(obj) {
         return Object.keys(obj).length === 0;
@@ -49,7 +51,7 @@ function SellerBasketListScreen({navigation}) {
     // ------------------------------
     return (
         <Screen>
-            <Text style={styles.headTitle}>You have {baskets.length} basket(s) in your store</Text>
+            <Text style={styles.headTitle}>You have {baskets.length} basket(s) in {store?.name}</Text>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('AddBasket')}
@@ -69,11 +71,11 @@ function SellerBasketListScreen({navigation}) {
                             style={styles.item}
                         >
                             <ListItem.Content>
-                                <ListItem.Title>{basket.name}</ListItem.Title>
+                                <ListItem.Title>{basket.id} - {basket.name}</ListItem.Title>
                                 <ListItem.Subtitle>{basket.description}</ListItem.Subtitle>
                                 <ListItem.Subtitle>Price : {basket.price}</ListItem.Subtitle>
                                 <ListItem.Subtitle>Quantity: {basket.quantity}</ListItem.Subtitle>
-                                <ListItem.Subtitle>{basket.category}</ListItem.Subtitle>
+                                <ListItem.Subtitle>Active: {basket.isActive ? 'Yes' : 'No'}</ListItem.Subtitle>
                             </ListItem.Content>
                             <ListItem.Chevron/>
                         </ListItem>
