@@ -11,6 +11,7 @@ import AppForm from "../../../components/forms/AppForm";
 import AppFormField from "../../../components/forms/AppFormField";
 import SubmitButton from "../../../components/forms/SubmitButton";
 import * as Yup from "yup";
+import ImagePicker from 'expo-image-picker';
 
 const validationSchemaForUpdateQuantity = Yup.object().shape({
     quantity: Yup.number().required().min(1).label('Quantity'),
@@ -74,6 +75,8 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
         );
     }
 
+
+
     return (basket && (
         <Screen>
             <Text style={styles.title}>Update details of : <Text style={{fontWeight:'bold'}}>{basket?.name}</Text></Text>
@@ -93,12 +96,15 @@ function SellerUpdateBasketFormScreen({navigation, route}) {
                     </View>
 
                     <View style={styles.upload}>
-                        <Text>Upload image</Text>
+                        <Text onPress={() => {console.log('Upload image')}}>
+                            Upload image
+                        </Text>
                     </View>
                 </View>
 
                 <View style={styles.containerImage}>
-                    <Image source={require('../../../../assets/images/avatar-1.jpg')} style={styles.image}/>
+                    {/* DISPLAY THE IMAGE OF THE BASKET  basket?.image?.url */}
+                    <Image source={{uri: basket?.image?.url}} style={styles.image}/>
                 </View>
 
                 {/* FORM TO UPDATE THE QUANTITY OF THE BASKET */}
