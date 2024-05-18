@@ -183,9 +183,9 @@ const StoreScreen = ({route, navigation}) => {
               }}>
               <Text
                 style={{marginVertical: 10, textAlign: 'center', ...FONTS.h2}}>
-                {store?.name} - {store?.price}
+                {store?.description} - {store?.price} XOF
               </Text>
-              <Text style={{...FONTS.body3}}>{store?.description}</Text>
+              <Text style={{...FONTS.body3}}>{store?.name}</Text>
             </View>
 
 
@@ -250,7 +250,7 @@ const StoreScreen = ({route, navigation}) => {
                   tintColor: COLORS.darkgray,
                 }}
               />
-              <Text style={{marginLeft: SIZES.padding}}>paiement en espèce</Text>
+              <Text style={{marginLeft: SIZES.padding}}>Cash payment</Text>
             </View>
           </View>
 
@@ -269,6 +269,7 @@ const StoreScreen = ({route, navigation}) => {
                 alignItems: 'center',
                 borderRadius: SIZES.radius,
               }}
+              disabled={getBasketItemCount() > 0 ? false : true}
               onPress={() =>
                 // navigation.navigate('OrderDeliveryScreen', {
                 //   store: store,

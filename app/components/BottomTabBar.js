@@ -6,6 +6,8 @@ import AccountScreen from "../screens/Account/AccountScreen";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import StoreScreen from "../screens/StoreScreen";
+import OrderScreen from "../screens/OrderScreen";
+import FavoriteScreen from "../screens/FavoriteScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +21,18 @@ function MyTabs() {
                         <MaterialCommunityIcons name="home-circle" color={color} size={35} />
                     ),
                     headerTitle: 'Home',
-                    headerShown: false,
+                    headerShown: true,
+                    headerTitleAlign: 'center',
+                }
+            }/>
+            <Tab.Screen name="Orders" component={OrderScreen} options={
+                {
+                    tabBarLabel: 'Orders',
+                    tabBarIcon: ({ color }) => (
+                        <MaterialCommunityIcons name="basket" color={color} size={35} />
+                    ),
+                    headerTitle: 'Orders',
+                    headerTitleAlign: 'center',
                 }
             }/>
             <Tab.Screen name="Account" component={AccountScreen} options={
@@ -29,6 +42,7 @@ function MyTabs() {
                         <MaterialCommunityIcons name="account-circle" color={color} size={35} />
                     ),
                     headerTitle: 'My Profile',
+                    headerTitleAlign: 'center',
                 }
             }/>
             <Tab.Screen name="Details" component={StoreScreen} options={
@@ -36,6 +50,14 @@ function MyTabs() {
                     tabBarButton: () => null,
                     headerTitle: null,
                     headerShown: false,
+                }
+            }/>
+            <Tab.Screen name="Favorite" component={FavoriteScreen} options={
+                {
+                    tabBarButton: () => null,
+                    headerTitle: "My Favorites stores",
+                    headerShown: true,
+                    headerTitleAlign: 'center',
                 }
             }/>
         </Tab.Navigator>

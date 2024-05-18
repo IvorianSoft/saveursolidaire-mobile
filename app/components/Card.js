@@ -169,16 +169,12 @@ const Card = ({store, navigation, currentLocation, categories}) => {
           style={{
             flexDirection: 'row',
           }}>
-          {store.categories.map(categoryId => {
-            return (
-              <View style={{flexDirection: 'row'}} key={categoryId}>
+              <View style={{flexDirection: 'row'}}>
                 <Text style={{...FONTS.h3, color: COLORS.darkgray}}> . </Text>
                 <Text style={{...FONTS.body3}}>
-                  {getCategoryNameById(categoryId)}
+                  {store.category}
                 </Text>
               </View>
-            );
-          })}
         </View>
       </View>
     </TouchableOpacity>

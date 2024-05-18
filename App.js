@@ -7,6 +7,7 @@ import LoginScreen from "./app/screens/Account/LoginScreen";
 import {ForgotPasswordScreen, RegisterScreen} from "./app/screens";
 import MyTabs from "./app/components/BottomTabBar";
 import RegisterSellerScreen from "./app/screens/Seller/RegisterScreen";
+import FavoriteScreen from "./app/screens/FavoriteScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,11 @@ export default function App() {
             <Stack.Screen name="Register" component={RegisterScreen}/>
             <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}/>
             <Stack.Screen name="RegisterSeller" component={RegisterSellerScreen}/>
+            <Stack.Screen name="Favorite" component={FavoriteScreen} options={
+                {
+                    headerTitle: 'My Favorites Recipes',
+                }
+            }/>
             <Stack.Screen name="HomeTabs" component={MyTabs}/>
         </Stack.Navigator>
         </NavigationContainer>

@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
     .required()
     .matches(/^[0-9]{10}$/, 'Invalid phone number')
     .label('Phone Number'),
-  password: Yup.string().required().min(4).label('Password'),
+  password: Yup.string().required().min(8).max(50).label('Password'),
   confirmPassword: Yup.string()
     .required()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
@@ -79,7 +79,7 @@ function RegisterScreen({navigation}) {
             autoCorrect={false}
             icon="phone"
             keyboardType="phone-pad"
-            name="contact"
+            name="phoneNumber"
             placeholder="Phone Number"
             textContentType="telephoneNumber"
           />
