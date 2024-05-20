@@ -50,7 +50,7 @@ function SellerAddBasketFormScreen({navigation}) {
     const handleSubmit = async values => {
         const response = await addBasket(values);
         if (response){
-            navigation.navigate('SellerBasket');
+            navigation.navigate('UpdateBasket', {basketId: response.id});
         }
     }
 
@@ -64,9 +64,11 @@ function SellerAddBasketFormScreen({navigation}) {
     // ------------------------------
     return (
         <Screen>
-            <ScrollView>
+            <ScrollView contentContainerStyle={styles.container}>
                 {initialValues && (
                     <AppForm initialValues={initialValues} onSubmit={values => handleSubmit(values)} validationSchema={validationSchema}>
+
+                        <Text style={{padding: 10}}>Name</Text>
                         <AppFormField
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -76,6 +78,7 @@ function SellerAddBasketFormScreen({navigation}) {
                             defaultValue={initialValues.name}
                         />
 
+                        <Text style={{padding: 5}}>Description</Text>
                         <AppFormField
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -85,6 +88,7 @@ function SellerAddBasketFormScreen({navigation}) {
                             defaultValue={initialValues.description}
                         />
 
+                        <Text style={{padding: 5}}>Price</Text>
                         <AppFormField
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -94,6 +98,7 @@ function SellerAddBasketFormScreen({navigation}) {
                             defaultValue={initialValues.price.toString()}
                         />
 
+                        <Text style={{padding: 5}}>Quantity</Text>
                         <AppFormField
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -103,6 +108,7 @@ function SellerAddBasketFormScreen({navigation}) {
                             defaultValue={initialValues.quantity.toString()}
                         />
 
+                        <Text style={{padding: 5}}>Note</Text>
                         <AppFormField
                             autoCapitalize="none"
                             autoCorrect={true}
@@ -131,6 +137,9 @@ const styles = StyleSheet.create({
     button: {
         width: '50%',
         height: 50,
+    },
+    container: {
+        flexDirection: 'column',
     },
 });
 
