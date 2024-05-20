@@ -3,16 +3,15 @@ import {StyleSheet} from "react-native";
 
 import defaultStyles from "../config/styles";
 import AccountScreen from "../screens/Account/AccountScreen";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
 import HomeScreen from "../screens/Seller/HomeScreen";
 import StoreInformationScreen from "../screens/Seller/Store/StoreInformationScreen";
 import SellerLocationScreen from "../screens/Seller/Store/SellerLocationScreen";
 import SellerBasketListScreen from "../screens/Seller/Basket/SellerBasketListScreen";
 import SellerAddBasketFormScreen from "../screens/Seller/Basket/SellerAddBasketFormScreen";
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faHome, faUser} from "@fortawesome/free-solid-svg-icons";
 import SellerUpdateBasketFormScreen from "../screens/Seller/Basket/SellerUpdateBasketFormScreen";
+import SellerOrderListScreen from "../screens/Seller/Order/SellerOrderListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -70,6 +69,13 @@ function SellerBottomTabBar() {
                     tabBarButton: () => null,
                     tabBarLabel: 'Update Basket',
                     headerTitle: 'Update Basket',
+                }
+            }/>
+            <Tab.Screen name="SellerOrder" component={SellerOrderListScreen} options={
+                {
+                    tabBarButton: () => null,
+                    tabBarLabel: 'Orders',
+                    headerTitle: 'Orders',
                 }
             }/>
         </Tab.Navigator>

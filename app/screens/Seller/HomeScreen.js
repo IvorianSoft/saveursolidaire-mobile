@@ -64,7 +64,7 @@ function HomeScreen({navigation}) {
                     </Card>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('Account')} style={styles.cardContainer}>
+                <TouchableOpacity onPress={() => navigation.navigate('SellerOrder')} style={styles.cardContainer}>
                     <Card containerStyle={styles.card}>
                         <Card.Title>Orders</Card.Title>
                         <Card.Divider/>
