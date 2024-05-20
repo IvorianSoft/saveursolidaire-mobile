@@ -35,6 +35,7 @@ function AccountScreen(props) {
           image={require('../../../assets/images/avatar-1.jpg')}
         />
       </View>
+      {user.role && user.role.name !== 'SELLER' && (
       <View style={styles.menu}>
         <View
           style={{
@@ -51,6 +52,7 @@ function AccountScreen(props) {
           </AppText>
         </View>
       </View>
+        )}
       <View style={styles.logout}>
         <FontAwesomeIcon icon={faLock} color={colors.red} size={40} style={{alignSelf: 'center'}}/>
         <AppText
