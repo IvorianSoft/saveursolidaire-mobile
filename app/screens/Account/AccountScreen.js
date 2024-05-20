@@ -30,7 +30,7 @@ function AccountScreen(props) {
     <View style={styles.container}>
       <View style={styles.profile}>
         <ListItem
-          title={user.name}
+          title={user.name + ' - ' + user?.role?.name}
           subtitle={user.email}
           image={require('../../../assets/images/avatar-1.jpg')}
         />
