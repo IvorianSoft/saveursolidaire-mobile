@@ -4,13 +4,14 @@ import theme from "../constants/theme";
 import CustomAlert from "./CustomAlert";
 import {updateIsPaidOrder} from "../services/OrderService";
 
-const PopupModal = ({ modalVisible, setModalVisible, item }) => {
+const PopupModal = ({ modalVisible, setModalVisible, item, navigation }) => {
     const [confirm, setConfirm] = React.useState(false);
 
         const confirmOrder = async () => {
             updateIsPaidOrder(item.id).then(
                 () => {
                     Alert.alert('Order confirmed successfully.');
+                    navigation.navigate('CustomerHomeTabs');
                 }
             )
             .catch(error => {

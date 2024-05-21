@@ -70,7 +70,7 @@ const OrderScreen = ({navigation}) => {
 
 
     const renderModal = () => (
-        <PopupModal modalVisible={modalVisible} setModalVisible={setModalVisible} item={selectedItem}></PopupModal>
+        <PopupModal modalVisible={modalVisible} setModalVisible={setModalVisible} item={selectedItem} navigation={navigation}></PopupModal>
     );
 
     if (loading) {

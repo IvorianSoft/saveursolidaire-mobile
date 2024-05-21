@@ -30,7 +30,7 @@ export const getAllOrdersByUserAndIsPaidTrue = async () => {
 export const getAllOrdersByUserAndIsPaidFalse = async () => {
     try {
         const header = await headers();
-        const response = await axios.get('/orders',
+        const response = await axios.get('/orders/user/is-not-paid',
             {
                 headers: header
             },
