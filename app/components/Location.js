@@ -1,10 +1,10 @@
-import {Text, View} from 'react-native';
+import {StatusBar, Text, View} from 'react-native';
 import {COLORS, FONTS, SIZES} from '../constants';
 import React from 'react';
 
 const Location = ({currentLocation}) => {
   return (
-    <View style={{flexDirection: 'row', height: 50}}>
+    <View style={{flexDirection: 'row', height: 50, marginTop: 10}}>
       <Text style={{...FONTS.h2, marginTop: 10}}>
         Welcome to Saveur Solidaire
       </Text>

@@ -1,21 +1,23 @@
 import React, {useEffect} from 'react';
 import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Animated,
+    StyleSheet,
+    SafeAreaView,
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    Animated, StatusBar,
 } from 'react-native';
 
 import {icons, COLORS, SIZES, FONTS} from '../constants';
+import Popup from "../components/Popup";
 
 const StoreScreen = ({route, navigation}) => {
   const scrollX = new Animated.Value(0);
   const [store, setStore] = React.useState(null);
   const [currentLocation, setCurrentLocation] = React.useState(null);
-  const [orderItems, setOrderItems] = React.useState([]);
+    const [modalVisible, setModalVisible] = React.useState(false);
+
 
   useEffect(() => {
     let {store, currentLocation} = route.params;
@@ -28,59 +30,40 @@ const StoreScreen = ({route, navigation}) => {
     return;
   });
 
-  function editOrder(action, menuId, price) {
-    let orderList = orderItems.slice();
-    let item = orderList.filter(a => a.menuId == menuId);
+    function showModal() {
+        setModalVisible(true);
+    }
 
-    if (action == '+') {
-      if (item.length > 0) {
-        let newQty = item[0].qty + 1;
-        item[0].qty = newQty;
-        item[0].total = item[0].qty * price;
-      } else {
-        const newItem = {
-          menuId: menuId,
-          qty: 1,
-          price: price,
-          total: price,
-        };
-        orderList.push(newItem);
-      }
-
-      setOrderItems(orderList);
+  function editOrder(action, price) {
+    if (action === '+') {
+      let newQty = store?.qty + 1;
+      setStore({
+        ...store,
+        qty: newQty,
+        total: store.total + price,
+      });
     } else {
-      if (item.length > 0) {
-        if (item[0]?.qty > 0) {
-          let newQty = item[0].qty - 1;
-          item[0].qty = newQty;
-          item[0].total = newQty * price;
-        }
+      if (store.qty > 0) {
+        let newQty = store?.qty - 1;
+        setStore({
+          ...store,
+          qty: newQty,
+          total: store.total - price,
+        });
       }
-
-      setOrderItems(orderList);
     }
   }
 
-  function getOrderQty(menuId) {
-    let orderItem = orderItems.filter(a => a.menuId == menuId);
-
-    if (orderItem.length > 0) {
-      return orderItem[0].qty;
-    }
-
-    return 0;
-  }
-
-  function getBasketItemCount() {
-    let itemCount = orderItems.reduce((a, b) => a + (b.qty || 0), 0);
-
-    return itemCount;
+  function getOrderQty() {
+      return store?.qty;
   }
 
   function sumOrder() {
-    let total = orderItems.reduce((a, b) => a + (b.total || 0), 0);
+    return store?.price * store?.qty;
+  }
 
-    return total.toFixed(2);
+  function getBasketItemCount() {
+        return store?.qty;
   }
 
   function renderHeader() {
@@ -122,22 +105,6 @@ const StoreScreen = ({route, navigation}) => {
             <Text style={{...FONTS.h3}}>{store?.name}</Text>
           </View>
         </View>
-
-        <TouchableOpacity
-          style={{
-            width: 50,
-            paddingRight: SIZES.padding * 2,
-            justifyContent: 'center',
-          }}>
-          <Image
-            source={icons.list}
-            resizeMode="contain"
-            style={{
-              width: 30,
-              height: 30,
-            }}
-          />
-        </TouchableOpacity>
       </View>
     );
   }
@@ -145,22 +112,12 @@ const StoreScreen = ({route, navigation}) => {
   function renderFoodInfo() {
       console.log(store);
     return (
-      <Animated.ScrollView
-        horizontal
-        pagingEnabled
-        scrollEventThrottle={16}
-        snapToAlignment="center"
-        showsHorizontalScrollIndicator={false}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {x: scrollX}}}],
-          {useNativeDriver: false},
-        )}>
-        {store?.menu.map((item, index) => (
-          <View key={`menu-${index}`} style={{alignItems: 'center'}}>
+      <View>
+          <View>
             <View style={{height: SIZES.height * 0.35}}>
               {/* Food Image */}
               <Image
-                source={item.photo}
+                source={store?.menu[0]?.photo}
                 resizeMode="cover"
                 style={{
                   width: SIZES.width,
@@ -187,7 +144,7 @@ const StoreScreen = ({route, navigation}) => {
                     borderTopLeftRadius: 25,
                     borderBottomLeftRadius: 25,
                   }}
-                  onPress={() => editOrder('-', item.menuId, item.price)}>
+                  onPress={() => editOrder('-', store.price)}>
                   <Text style={{...FONTS.body1}}>-</Text>
                 </TouchableOpacity>
 
@@ -198,7 +155,7 @@ const StoreScreen = ({route, navigation}) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Text style={{...FONTS.h2}}>{getOrderQty(item.menuId)}</Text>
+                  <Text style={{...FONTS.h2}}>{getOrderQty()}</Text>
                 </View>
 
                 <TouchableOpacity
@@ -210,7 +167,7 @@ const StoreScreen = ({route, navigation}) => {
                     borderTopRightRadius: 25,
                     borderBottomRightRadius: 25,
                   }}
-                  onPress={() => editOrder('+', item.menuId, item.price)}>
+                  onPress={() => editOrder('+', store.price)}>
                   <Text style={{...FONTS.body1}}>+</Text>
                 </TouchableOpacity>
               </View>
@@ -226,86 +183,13 @@ const StoreScreen = ({route, navigation}) => {
               }}>
               <Text
                 style={{marginVertical: 10, textAlign: 'center', ...FONTS.h2}}>
-                {item.name} - {item.price.toFixed(2)}
+                {store?.description} - {store?.price} XOF
               </Text>
-              <Text style={{...FONTS.body3}}>{item.description}</Text>
+              <Text style={{...FONTS.body3}}>{store?.name}</Text>
             </View>
 
-            {/* Calories */}
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 10,
-              }}>
-              <Image
-                source={icons.fire}
-                style={{
-                  width: 20,
-                  height: 20,
-                  marginRight: 10,
-                }}
-              />
 
-              <Text
-                style={{
-                  ...FONTS.body3,
-                  color: COLORS.darygray,
-                }}>
-                {item.calories.toFixed(2)} cal
-              </Text>
-            </View>
           </View>
-        ))}
-      </Animated.ScrollView>
-    );
-  }
-
-  function renderDots() {
-    const dotPosition = Animated.divide(scrollX, SIZES.width);
-
-    return (
-      <View style={{height: 30}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: SIZES.padding,
-          }}>
-          {store?.menu.map((item, index) => {
-            const opacity = dotPosition.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [0.3, 1, 0.3],
-              extrapolate: 'clamp',
-            });
-
-            const dotSize = dotPosition.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [SIZES.base * 0.8, 10, SIZES.base * 0.8],
-              extrapolate: 'clamp',
-            });
-
-            const dotColor = dotPosition.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [COLORS.darkgray, COLORS.primary, COLORS.darkgray],
-              extrapolate: 'clamp',
-            });
-
-            return (
-              <Animated.View
-                key={`dot-${index}`}
-                opacity={opacity}
-                style={{
-                  borderRadius: SIZES.radius,
-                  marginHorizontal: 6,
-                  width: dotSize,
-                  height: dotSize,
-                  backgroundColor: dotColor,
-                }}
-              />
-            );
-          })}
-        </View>
       </View>
     );
   }
@@ -313,7 +197,6 @@ const StoreScreen = ({route, navigation}) => {
   function renderOrder() {
     return (
       <View>
-        {renderDots()}
         <View
           style={{
             backgroundColor: COLORS.white,
@@ -330,9 +213,9 @@ const StoreScreen = ({route, navigation}) => {
               borderBottomWidth: 1,
             }}>
             <Text style={{...FONTS.h3}}>
-              {getBasketItemCount()} items in Cart
+              {getBasketItemCount()} {getBasketItemCount()<=1 ? 'item' : 'items'} in Cart
             </Text>
-            <Text style={{...FONTS.h3}}>${sumOrder()}</Text>
+            <Text style={{...FONTS.h3}}>{sumOrder()} XOF</Text>
           </View>
 
           <View
@@ -353,7 +236,7 @@ const StoreScreen = ({route, navigation}) => {
                 }}
               />
               <Text style={{marginLeft: SIZES.padding, ...FONTS.h4}}>
-                Location
+                  {store?.locationCity}
               </Text>
             </View>
 
@@ -367,7 +250,7 @@ const StoreScreen = ({route, navigation}) => {
                   tintColor: COLORS.darkgray,
                 }}
               />
-              <Text style={{marginLeft: SIZES.padding, ...FONTS.h4}}>8888</Text>
+              <Text style={{marginLeft: SIZES.padding}}>Cash payment</Text>
             </View>
           </View>
 
@@ -386,11 +269,13 @@ const StoreScreen = ({route, navigation}) => {
                 alignItems: 'center',
                 borderRadius: SIZES.radius,
               }}
+              disabled={getBasketItemCount() > 0 ? false : true}
               onPress={() =>
-                navigation.navigate('OrderDeliveryScreen', {
-                  store: store,
-                  currentLocation: currentLocation,
-                })
+                // navigation.navigate('OrderDeliveryScreen', {
+                //   store: store,
+                //   currentLocation: currentLocation,
+                // })
+                showModal()
               }>
               <Text style={{color: COLORS.white, ...FONTS.h2}}>Order</Text>
             </TouchableOpacity>
@@ -402,9 +287,16 @@ const StoreScreen = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {renderHeader()}
-      {renderFoodInfo()}
-      {renderOrder()}
+        <View style={ styles.headerContainer}>
+            {renderHeader()}
+            <View style={ styles.foodInfoContainer }>
+                {renderFoodInfo()}
+            </View>
+            <View style={ styles.orderContainer }>
+                {renderOrder()}
+            </View>
+            </View>
+        <Popup modalVisible={modalVisible} setModalVisible={setModalVisible} text="Achat effectué avec succès !" />
     </SafeAreaView>
   );
 };
@@ -413,7 +305,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightGray2,
+
   },
+    headerContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        marginTop: StatusBar.currentHeight,
+    },
+    foodInfoContainer: {
+        flex: 1,
+        marginTop: 50,
+    },
+    orderContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+    }
 });
 
 export default StoreScreen;

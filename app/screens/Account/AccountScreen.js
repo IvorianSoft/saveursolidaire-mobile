@@ -13,6 +13,7 @@ function AccountScreen(props) {
   useEffect(() => {
     getUser().then(user => {
       setUser(user);
+      console.log(user)
     });
   }, []);
 
@@ -25,6 +26,10 @@ function AccountScreen(props) {
       });
     }
   };
+
+    const handleFavorite = () => {
+    props.navigation.navigate('Favorite');
+    }
 
   return (
     <View style={styles.container}>
@@ -47,7 +52,7 @@ function AccountScreen(props) {
           <FontAwesomeIcon icon={faHeart} color={colors.orange} size={40} style={{alignSelf: 'center'}}/>
           <AppText
             style={{fontWeight: 'bold', marginLeft: 10}}
-            onPress={() => console.log('My Favorites')}>
+            onPress={() => handleFavorite()}>
             {'My Favorites'}
           </AppText>
         </View>

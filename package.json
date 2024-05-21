@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-native-fontawesome": "^0.3.0",
+    "@faker-js/faker": "^8.4.1",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-picker/picker": "^2.7.5",
     "@react-navigation/bottom-tabs": "^6.5.20",
@@ -22,6 +23,7 @@
     "expo": "^51.0.1",
     "expo-image-picker": "~15.0.4",
     "expo-status-bar": "~1.11.1",
+    "fakerr": "^0.0.1",
     "formik": "^2.4.6",
     "react": "18.2.0",
     "react-native": "0.73.6",
@@ -34,6 +36,7 @@
     "react-native-svg": "^15.2.0",
     "yup": "^1.4.0",
     "expo-image-manipulator": "~12.0.5"
+    "react-native-swipe-gestures": "^1.0.5",
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

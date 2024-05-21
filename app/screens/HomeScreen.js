@@ -13,8 +13,11 @@ import {icons, images, SIZES, COLORS, FONTS} from '../constants';
 import Location from '../components/Location';
 import Card from '../components/Card';
 import MainCategory from '../components/MainCategory';
+import Loader from "../components/Loader";
+import {getAllStores} from "../services/StoreService";
 
 const HomeScreen = ({navigation}) => {
+
 
   const initialCurrentLocation = {
     streetName: 'Lille',
@@ -62,11 +65,15 @@ const HomeScreen = ({navigation}) => {
       id: 1,
       name: 'ByProgrammers Burger',
       rating: 4.8,
+      locationCity: 'Lille',
+      price: 5,
       categories: [5, 7],
       priceRating: affordable,
       photo: images.burger_store_1,
+      qty: 1,
       duration: '30 - 45 min',
       basketToSave: 5,
+      description: 'No waste basket',
       location: {
         latitude: 1.5347282806345879,
         longitude: 110.35632207358996,
@@ -106,6 +113,7 @@ const HomeScreen = ({navigation}) => {
       id: 2,
       name: 'ByProgrammers Pizza',
       rating: 4.8,
+      price: 10,
       categories: [2, 4, 6],
       priceRating: expensive,
       photo: images.pizza_store,
@@ -156,6 +164,7 @@ const HomeScreen = ({navigation}) => {
     },
     {
       id: 3,
+      price: 5,
       name: 'ByProgrammers Hotdogs',
       rating: 4.8,
       categories: [3],
@@ -186,6 +195,7 @@ const HomeScreen = ({navigation}) => {
       name: 'ByProgrammers Sushi',
       rating: 4.8,
       categories: [8],
+      price: 20,
       priceRating: expensive,
       photo: images.japanese_store,
       duration: '10 - 15 min',
@@ -210,6 +220,7 @@ const HomeScreen = ({navigation}) => {
     },
     {
       id: 5,
+      price: 10,
       name: 'ByProgrammers Cuisine',
       rating: 4.8,
       categories: [1, 2],
@@ -306,18 +317,38 @@ const HomeScreen = ({navigation}) => {
 
   const [categories, setCategories] = React.useState(categoryData);
   const [selectedCategory, setSelectedCategory] = React.useState(null);
-  const [stores, setStores] = React.useState(storeData);
+  const [stores, setStores] = React.useState([]);
+  const [allStores, setAllStores] = React.useState([]);
   const [currentLocation, setCurrentLocation] = React.useState(
     initialCurrentLocation,
   );
+  const [loading, setLoading] = useState(true);
+
+  useEffect(async () => {
+    await getAllStores()
+        .then(data => {
+
+          setStores(data);
+          setAllStores(data);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error(error);
+          setLoading(false);
+        });
+  }, []);
+
+  if (loading) {
+    return <Loader loading/>;
+  }
 
   function onSelectCategory(category) {
     //filter store
     if (selectedCategory && category.id === selectedCategory.id) {
-      setStores(storeData);
+      setStores(allStores);
       setSelectedCategory(null);
     } else {
-      let storeList = storeData.filter(a => a.categories.includes(category.id));
+      let storeList = stores.filter(a => a.category===category.name);
 
       setStores(storeList);
 
@@ -340,7 +371,7 @@ const HomeScreen = ({navigation}) => {
 
     return (
       <View style={{padding: SIZES.padding * 2}}>
-        <Text style={{fontFamily: 'Lato', ...FONTS.h2}}>
+        <Text style={FONTS.h2}>
           Your stores by categories
         </Text>
 
