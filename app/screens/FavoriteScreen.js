@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, View} from "react-native";
-import {getFavorites, isFavorite, removeFavorite, storeFavorite} from "../storage/FavoriteStorage";
+import {getFavorites, isFavorite, removeFavorite, basketFavorite} from "../storage/FavoriteStorage";
 import FavoriteCard from "../components/FavoriteCard";
 import LoaderComponent from "../components/Loader";
 
@@ -39,8 +39,9 @@ function FavoriteScreen({navigation}) {
                         favorites &&
                         favorites.map((favorite, index) => {
                             return (< FavoriteCard
+                                navigation={ navigation }
                             key = {index}
-                            store = {favorite}
+                            basket = {favorite}
                             removeFavoriteHandler = {removeFavoriteHandler}
                             />)
                         })

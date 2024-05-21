@@ -14,7 +14,6 @@ import Location from '../components/Location';
 import Card from '../components/Card';
 import MainCategory from '../components/MainCategory';
 import Loader from "../components/Loader";
-import {getAllStores} from "../services/StoreService";
 import {searchBaskets} from "../services/BasketService";
 
 const HomeScreen = ({navigation}) => {
@@ -52,7 +51,7 @@ const HomeScreen = ({navigation}) => {
     },
     {
       id: 5,
-      name: 'Fast food',
+      name: 'Fast Food',
       icon: icons.food,
     },
   ];
@@ -346,7 +345,9 @@ const HomeScreen = ({navigation}) => {
       setBaskets(allBaskets);
       setSelectedCategory(null);
     } else {
-      let basketList = baskets.filter(a => a.category===category.name);
+      let basketList = baskets.filter(a => {
+        return a.store.category.toUpperCase()===category.name.toUpperCase()
+      });
 
       setBaskets(basketList);
 

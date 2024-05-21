@@ -5,22 +5,23 @@ import colors from "../config/colors";
 import AppText from "./AppText";
 import Icon from "./Icon";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
-import {isFavorite, removeFavorite, storeFavorite} from "../storage/FavoriteStorage";
+import {isFavorite, removeFavorite, basketFavorite} from "../storage/FavoriteStorage";
 import {star} from "../constants/icons";
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faMapMarker, faMarker, faTrash} from "@fortawesome/free-solid-svg-icons";
 
-const FavoriteCard = ({ removeFavoriteHandler, store}) => {
-    const [expanded, setExpanded] = useState(false);
+const FavoriteCard = ({ removeFavoriteHandler, basket, navigation}) => {
     const opacityValue = useState(new Animated.Value(0))[0];
     const [iconName, setIconName] = useState('');
 
-    const addOrRemoveFavorite = async (store) => {
-        const isFavoriteBool = await isFavorite(store);
+    const addOrRemoveFavorite = async (basket) => {
+        const isFavoriteBool = await isFavorite(basket);
         if (isFavoriteBool) {
-            await removeFavorite(store);
+            await removeFavorite(basket);
         } else {
-            await storeFavorite(store);
+            await basketFavorite(basket);
         }
-        const isFavoriteBoolAfter = await isFavorite(store);
+        const isFavoriteBoolAfter = await isFavorite(basket);
         setIconName(isFavoriteBoolAfter ? "star" : "star-outline");
 
 
@@ -28,40 +29,43 @@ const FavoriteCard = ({ removeFavoriteHandler, store}) => {
 
     useEffect(() => {
         const materialCommunityIconsName = async () => {
-            const isFavoriteBool = await isFavorite(store);
+            const isFavoriteBool = await isFavorite(basket);
             setIconName(isFavoriteBool ? "star" : "star-outline");
         }
         materialCommunityIconsName();
-    }, [store]);
+    }, [basket]);
 
     return (
         <View style={styles.container}>
             <View style={styles.card}>
-                <Image style={styles.image} source={store?.photo} />
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Details', {basket})}
+                >
+                <Image style={styles.image} source={{ uri: basket?.image.url}} />
+                </TouchableOpacity>
                 <View style={styles.detailsContainer}>
                     <View style={styles.titleContainer}>
                         <AppText style={styles.title}>
-                            {store?.name}
+                            {basket?.name}
                         </AppText>
                         {
                             removeFavoriteHandler && (
-                                <MaterialCommunityIcons
-                                    name={"delete"}
+                                <FontAwesomeIcon
+                                    icon={faTrash}
                                     size={20}
-                                    color={colors.red}
-                                    onPress={() => removeFavoriteHandler(store)}
-                                    style={styles.starIcon}
+                                    color={colors.primary}
+                                    onPress={() => removeFavoriteHandler(basket)}
                                 />
                             )
                         }
                     </View>
                     <View style={styles.locationContainer}>
-                        <MaterialCommunityIcons
-                            name="map-marker"
+                        <FontAwesomeIcon
+                            icon={faMapMarker}
                             size={20}
                             color={colors.secondary}
                         />
-                        <AppText style={styles.subTitle}>{store?.locationCity}</AppText>
+                        <AppText style={styles.subTitle}>{basket?.store.location.address}</AppText>
                     </View>
                 </View>
             </View>
