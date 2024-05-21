@@ -15,6 +15,7 @@ import Card from '../components/Card';
 import MainCategory from '../components/MainCategory';
 import Loader from "../components/Loader";
 import {getAllStores} from "../services/StoreService";
+import {searchBaskets} from "../services/BasketService";
 
 const HomeScreen = ({navigation}) => {
 
@@ -24,6 +25,7 @@ const HomeScreen = ({navigation}) => {
     gps: {
       latitude: 50.633333,
       longitude: 3.066667,
+      radius: 10,
     },
   };
 
@@ -60,7 +62,7 @@ const HomeScreen = ({navigation}) => {
   const fairPrice = 2;
   const expensive = 3;
 
-  const storeData = [
+  const basketData = [
     {
       id: 1,
       name: 'ByProgrammers Burger',
@@ -69,7 +71,7 @@ const HomeScreen = ({navigation}) => {
       price: 5,
       categories: [5, 7],
       priceRating: affordable,
-      photo: images.burger_store_1,
+      photo: images.burger_basket_1,
       qty: 1,
       duration: '30 - 45 min',
       basketToSave: 5,
@@ -116,7 +118,7 @@ const HomeScreen = ({navigation}) => {
       price: 10,
       categories: [2, 4, 6],
       priceRating: expensive,
-      photo: images.pizza_store,
+      photo: images.pizza_basket,
       duration: '15 - 20 min',
       location: {
         latitude: 1.556306570595712,
@@ -169,7 +171,7 @@ const HomeScreen = ({navigation}) => {
       rating: 4.8,
       categories: [3],
       priceRating: expensive,
-      photo: images.hot_dog_store,
+      photo: images.hot_dog_basket,
       duration: '20 - 25 min',
       location: {
         latitude: 1.5238753474714375,
@@ -197,7 +199,7 @@ const HomeScreen = ({navigation}) => {
       categories: [8],
       price: 20,
       priceRating: expensive,
-      photo: images.japanese_store,
+      photo: images.japanese_basket,
       duration: '10 - 15 min',
       location: {
         latitude: 1.5578068150528928,
@@ -315,27 +317,23 @@ const HomeScreen = ({navigation}) => {
     },
   ];
 
+
+
   const [categories, setCategories] = React.useState(categoryData);
   const [selectedCategory, setSelectedCategory] = React.useState(null);
-  const [stores, setStores] = React.useState([]);
-  const [allStores, setAllStores] = React.useState([]);
+  const [baskets, setBaskets] = React.useState([]);
+  const [allBaskets, setAllBaskets] = React.useState([]);
   const [currentLocation, setCurrentLocation] = React.useState(
     initialCurrentLocation,
   );
   const [loading, setLoading] = useState(true);
 
-  useEffect(async () => {
-    await getAllStores()
-        .then(data => {
-
-          setStores(data);
-          setAllStores(data);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error(error);
-          setLoading(false);
-        });
+  useEffect(() => {
+    searchBaskets(currentLocation.gps).then(data => {
+      setAllBaskets(data);
+      setBaskets(data);
+      setLoading(false);
+    } );
   }, []);
 
   if (loading) {
@@ -343,14 +341,14 @@ const HomeScreen = ({navigation}) => {
   }
 
   function onSelectCategory(category) {
-    //filter store
+    //filter basket
     if (selectedCategory && category.id === selectedCategory.id) {
-      setStores(allStores);
+      setBaskets(allBaskets);
       setSelectedCategory(null);
     } else {
-      let storeList = stores.filter(a => a.category===category.name);
+      let basketList = baskets.filter(a => a.category===category.name);
 
-      setStores(storeList);
+      setBaskets(basketList);
 
       setSelectedCategory(category);
     }
@@ -372,9 +370,8 @@ const HomeScreen = ({navigation}) => {
     return (
       <View style={{padding: SIZES.padding * 2}}>
         <Text style={FONTS.h2}>
-          Your stores by categories
+          Your baskets by categories
         </Text>
-
         <FlatList
           data={categories}
           horizontal
@@ -387,11 +384,11 @@ const HomeScreen = ({navigation}) => {
     );
   }
 
-  function renderStoreList() {
+  function renderBasketList() {
     // @ts-ignore
     const renderItem = ({item}) => (
       <Card
-        store={item}
+        basket={item}
         navigation={navigation}
         currentLocation={currentLocation}
         categories={categories}
@@ -400,7 +397,7 @@ const HomeScreen = ({navigation}) => {
 
     return (
       <FlatList
-        data={stores}
+        data={baskets}
         keyExtractor={item => `${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={{
@@ -415,7 +412,7 @@ const HomeScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       {renderHeader()}
       {renderMainCategories()}
-      {renderStoreList()}
+      {renderBasketList()}
     </SafeAreaView>
   );
 };

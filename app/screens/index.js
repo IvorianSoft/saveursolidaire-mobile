@@ -1,5 +1,5 @@
 import HomeScreen from './HomeScreen';
-import StoreScreen from './StoreScreen';
+import StoreScreen from './BasketScreen';
 import OrderDeliveryScreen from './OrderDeliveryScreen';
 import AccountScreen from './Account/AccountScreen';
 import RegisterScreen from './Account/RegisterScreen';

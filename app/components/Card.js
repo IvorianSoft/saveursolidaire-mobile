@@ -15,30 +15,30 @@ import Icon from './Icon';
 import {
   isFavorite,
   removeFavorite,
-  storeFavorite,
+  basketFavorite,
 } from '../storage/FavoriteStorage';
 import {COLORS, FONTS, icons, SIZES} from '../constants';
 
-const Card = ({store, navigation, currentLocation, categories}) => {
+const Card = ({basket, navigation, currentLocation, categories}) => {
   const [iconName, setIconName] = useState(icons.starOutline);
 
   useEffect(() => {
-    console.log(store);
+    console.log(basket);
     async function fetchData() {
-      const favorites = await isFavorite(store);
+      const favorites = await isFavorite(basket);
       setIconName(favorites ? icons.star : icons.starOutline);
     }
     fetchData();
   });
 
-  const addOrRemoveFavorite = async store => {
-    const isFavoriteBool = await isFavorite(store);
+  const addOrRemoveFavorite = async basket => {
+    const isFavoriteBool = await isFavorite(basket);
     if (isFavoriteBool) {
-      await removeFavorite(store);
+      await removeFavorite(basket);
     } else {
-      await storeFavorite(store);
+      await basketFavorite(basket);
     }
-    const isFavoriteBoolAfter = await isFavorite(store);
+    const isFavoriteBoolAfter = await isFavorite(basket);
     setIconName(isFavoriteBoolAfter ? icons.star : icons.starOutline);
   };
 
@@ -57,7 +57,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
       style={{marginBottom: SIZES.padding * 2}}
       onPress={() =>
         navigation.navigate('Details', {
-          store,
+          basket,
           currentLocation,
         })
       }>
@@ -67,7 +67,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
           marginBottom: SIZES.padding,
         }}>
         <Image
-          source={store.photo}
+          source={{uri: basket.image.url}}
           resizeMode="cover"
           style={{
             width: '100%',
@@ -89,7 +89,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
             justifyContent: 'center',
             ...styles.shadow,
           }}>
-          <Text style={{...FONTS.h4}}>{store.price} XOF</Text>
+          <Text style={{...FONTS.h4}}>{basket.price} XOF</Text>
         </View>
 
         <View
@@ -99,7 +99,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
             right: 10,
             height: 20,
             backgroundColor:
-              store.basketToSave > 0 ? COLORS.lightGreen : COLORS.white,
+              basket.quantity > 0 ? COLORS.lightGreen : COLORS.white,
             width: SIZES.width * 0.3,
             borderTopRightRadius: SIZES.radius,
             borderBottomLeftRadius: SIZES.radius,
@@ -110,7 +110,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
             ...styles.shadow,
           }}>
           <Text style={{...FONTS.body4}}>
-            {store.basketToSave} {store.basketToSave > 1 ? 'baskets' : 'basket'}{' '}
+            {basket.quantity} {basket.quantity > 1 ? 'baskets' : 'basket'}{' '}
             to save
           </Text>
         </View>
@@ -130,7 +130,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
             justifyContent: 'center',
             ...styles.shadow,
           }}>
-          <TouchableOpacity onPress={() => addOrRemoveFavorite(store)}>
+          <TouchableOpacity onPress={() => addOrRemoveFavorite(basket)}>
             <Image
               source={iconName}
               resizeMode="contain"
@@ -143,8 +143,8 @@ const Card = ({store, navigation, currentLocation, categories}) => {
         </View>
       </View>
 
-      {/* StoreScreen Info */}
-      <Text style={{...FONTS.body2}}>{store.name}</Text>
+      {/* basketScreen Info */}
+      <Text style={{...FONTS.body2}}>{basket.name}</Text>
 
       <View
         style={{
@@ -162,7 +162,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
             marginRight: 10,
           }}
         />
-        <Text style={{...FONTS.body3}}>{store.rating}</Text>
+        <Text style={{...FONTS.body3}}>4,3</Text>
 
         {/* Categories */}
         <View
@@ -172,7 +172,7 @@ const Card = ({store, navigation, currentLocation, categories}) => {
               <View style={{flexDirection: 'row'}}>
                 <Text style={{...FONTS.h3, color: COLORS.darkgray}}> . </Text>
                 <Text style={{...FONTS.body3}}>
-                  {store.category}
+                  {basket.store.category}
                 </Text>
               </View>
         </View>

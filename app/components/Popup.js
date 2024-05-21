@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {TouchableOpacity, View, Modal, StyleSheet, Text, Image, Animated} from "react-native";
 
-function Popup({modalVisible,setModalVisible,text}) {
+function Popup({modalVisible,setModalVisible,text, navigation}) {
     const position = useRef(new Animated.ValueXY({ x: 0, y: 1000 })).current;
 
     const handleClose = () => {
@@ -10,6 +10,8 @@ function Popup({modalVisible,setModalVisible,text}) {
             duration: 2000,
             useNativeDriver: false
         }).start(() => setModalVisible(false));
+
+        navigation.navigate('CustomerHomeTabs');
     }
 
     useEffect(() => {

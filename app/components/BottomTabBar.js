@@ -5,20 +5,22 @@ import defaultStyles from "../config/styles";
 import AccountScreen from "../screens/Account/AccountScreen";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
-import StoreScreen from "../screens/StoreScreen";
 import OrderScreen from "../screens/OrderScreen";
 import FavoriteScreen from "../screens/FavoriteScreen";
+import BasketScreen from "../screens/BasketScreen";
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faHome, faList, faUser} from "@fortawesome/free-solid-svg-icons";
 
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
     return (
         <Tab.Navigator style={styles.tab}>
-            <Tab.Screen name="HomeTabs" component={HomeScreen} options={
+            <Tab.Screen name="CustomerHomeTabs" component={HomeScreen} options={
                 {
                     tabBarLabel: 'Home',
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="home-circle" color={color} size={35} />
+                        <FontAwesomeIcon icon={faHome} color={color} style={{alignSelf: 'center'}}/>
                     ),
                     headerTitle: 'Home',
                     headerShown: true,
@@ -29,7 +31,7 @@ function MyTabs() {
                 {
                     tabBarLabel: 'Orders',
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="basket" color={color} size={35} />
+                        <FontAwesomeIcon icon={faList} color={color} style={{alignSelf: 'center'}}/>
                     ),
                     headerTitle: 'Orders',
                     headerTitleAlign: 'center',
@@ -39,13 +41,13 @@ function MyTabs() {
                 {
                     tabBarLabel: 'Account',
                     tabBarIcon: ({ color}) => (
-                        <MaterialCommunityIcons name="account-circle" color={color} size={35} />
+                        <FontAwesomeIcon icon={faUser} color={color} style={{alignSelf: 'center'}}/>
                     ),
                     headerTitle: 'My Profile',
                     headerTitleAlign: 'center',
                 }
             }/>
-            <Tab.Screen name="Details" component={StoreScreen} options={
+            <Tab.Screen name="Details" component={BasketScreen} options={
                 {
                     tabBarButton: () => null,
                     headerTitle: null,

@@ -1,9 +1,12 @@
 import axios from 'axios';
 import {fetchUser} from './FetchUserDataService';
+import {API_URL} from "../SaveurSolidaireApi";
+
+axios.defaults.baseURL = API_URL;
+
 export const register = async data => {
   try {
-    const userCredential = await axios.post(
-      'https://api-saveursolidaire.ivoriandev.com/v1/auth/register',
+    const userCredential = await axios.post('/auth/register',
       data,
       {
         headers: {
@@ -12,8 +15,16 @@ export const register = async data => {
       },
     );
     const user = userCredential.data;
+    console.log(user);
     return true;
   } catch (error) {
+    console.log(error.message);
+    let message = '';
+    for (const key in error.response.data) {
+      message += key + ': ' + error.response.data[key] + '\n';
+    }
+    alert(message);
+
     if (error.response && error.status === 403) {
       alert(error.message);
     }

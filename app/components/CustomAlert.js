@@ -3,8 +3,9 @@ import { Modal, Text, TouchableHighlight, View, StyleSheet } from 'react-native'
 import theme from "../constants/theme";
 import colors from "../config/colors";
 
-const CustomAlert = ({ modalVisible, setModalVisible, setParentModalVisible, title, message }) => {
-    const handleYesPress = () => {
+const CustomAlert = ({ modalVisible, setModalVisible, confirmOrder, setParentModalVisible, title, message }) => {
+    const handleYesPress = async () => {
+        await confirmOrder();
         setModalVisible(!modalVisible);
         setParentModalVisible(false);
     };

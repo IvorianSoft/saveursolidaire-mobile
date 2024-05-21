@@ -18,7 +18,7 @@ const Tab = createBottomTabNavigator();
 function SellerBottomTabBar() {
     return (
         <Tab.Navigator style={styles.tab}>
-            <Tab.Screen name="HomeTabs" component={HomeScreen} options={
+            <Tab.Screen name="SellerHomeTabs" component={HomeScreen} options={
                 {
                     tabBarLabel: 'Home',
                     tabBarIcon: ({ color }) => (
@@ -27,7 +27,7 @@ function SellerBottomTabBar() {
                     headerTitle: 'Home',
                 }
             }/>
-            <Tab.Screen name="Account" component={AccountScreen} options={
+            <Tab.Screen name="SellerAccount" component={AccountScreen} options={
                 {
                     tabBarLabel: 'Account',
                     tabBarIcon: ({ color}) => (

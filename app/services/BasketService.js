@@ -1,7 +1,6 @@
 import axios from "axios";
-import {user} from "../constants/icons";
-import {getToken} from "../storage/UserStorage";
 import {API_URL} from "./SaveurSolidaireApi";
+import {getToken} from "../storage/UserStorage";
 
 axios.defaults.baseURL = API_URL;
 
@@ -13,18 +12,18 @@ const getHeader = async () => {
     };
 }
 
-export const getAllStores = async () => {
+export const searchBaskets = async (search) => {
     try {
         const headers = await getHeader();
-        const response = await axios.get('/stores',
+        const response = await axios.get(
+            `/baskets/search?longitude=${search.longitude}&latitude=${search.latitude}&radius=${search.radius}`,
             {
                 headers: headers,
             },
         );
-        console.log(response.data)
+        console.log("searchBaskets response.data:", response.data)
         return response.data;
     } catch (error) {
-        console.error(error);
-        return [];
+        console.log("Error during searchBaskets:", error);
     }
 }

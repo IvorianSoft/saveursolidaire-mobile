@@ -1,17 +1,38 @@
 import axios from "axios";
-import {getUser} from "../storage/UserStorage";
+import {getToken} from "../storage/UserStorage";
+import {API_URL} from "./SaveurSolidaireApi";
 
-axios.defaults.baseURL = "https://api-saveursolidaire.ivoriandev.com/v1";
+axios.defaults.baseURL = API_URL;
+
+const headers = async () => {
+    const token = await getToken();
+    return {
+        'accept': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${token}`,
+    };
+}
 
 export const getAllOrdersByUserAndIsPaidTrue = async () => {
     try {
-        const user = await getUser();
-        const response = await axios.get('/orders/user/{user.id}/is-paid',
+        const header = await headers();
+        const response = await axios.get('/orders/user/is-paid',
             {
-                headers: {
-                    'accept': 'application/json;charset=UTF-8',
-                    'Authorization': 'Bearer ${user.token}',
-                },
+                headers: header
+            },
+        );
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export const getAllOrdersByUserAndIsPaidFalse = async () => {
+    try {
+        const header = await headers();
+        const response = await axios.get('/orders',
+            {
+                headers: header
             },
         );
         return response.data;
@@ -23,38 +44,33 @@ export const getAllOrdersByUserAndIsPaidTrue = async () => {
 
 export const createOrder = async (data) => {
     try {
-        const user = await getUser();
+        const header = await headers();
+
         const response = await axios.post('/orders',
             data,
             {
-                headers: {
-                    'accept': 'application/json;charset=UTF-8',
-                    'Authorization': 'Bearer ${user.token}',
-                },
+                headers: header
             },
         );
         return response.data;
     } catch (error) {
         console.error(error);
-        return [];
+        throw error;
     }
 }
 
-export const updateIsPaidOrder = async (orderId, isPaid) => {
+export const updateIsPaidOrder = async (orderId) => {
     try {
-        const user = await getUser();
-        const response = await axios.put(`/orders/${orderId}`,
-            { isPaid },
+        const header = await headers();
+        const response = await axios.put(`/orders/${orderId}/status`,
+            {},
             {
-                headers: {
-                    'accept': 'application/json;charset=UTF-8',
-                    'Authorization': `Bearer ${user.token}`,
-                },
+                headers: header
             },
         );
         return response.data;
     } catch (error) {
         console.error(error);
-        return [];
+        throw error;
     }
 }

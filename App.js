@@ -16,38 +16,43 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [initialRouteName, setInitialRouteName] = useState(null);
+
   useEffect(() => {
-    const checkUser = async () => {
-      const user = await getUser();
-      if (user) {
-          if (user.role.name === 'SELLER') {
-              setInitialRouteName('SellerHomeTabs');
+      const checkUser = async () => {
+          const user = await getUser();
+          console.log('User:', user)
+          if (user) {
+              return user.role.name === 'SELLER' ? "SellerHomeTabs" : "HomeTabs";
+          } else {
+              return "Login";
           }
-          setInitialRouteName('HomeTabs');
-      }else {
-        setInitialRouteName('Login');
       }
-    }
-    checkUser();
+
+      checkUser().then(routeName => {
+          console.log('Route Name:', routeName)
+          setInitialRouteName(routeName);
+
+          console.log('Initial Route Name:', initialRouteName)
+      })
   }, []);
 
-    return (
+    return initialRouteName ? (
         <NavigationContainer>
-        <Stack.Navigator initialRouteName="HomeTabs" screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Login" component={LoginScreen}/>
-            <Stack.Screen name="Register" component={RegisterScreen}/>
-            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}/>
-            <Stack.Screen name="RegisterSeller" component={RegisterSellerScreen}/>
-            <Stack.Screen name="Favorite" component={FavoriteScreen} options={
-                {
-                    headerTitle: 'My Favorites Recipes',
-                }
-            }/>
-            <Stack.Screen name="HomeTabs" component={MyTabs}/>
-            <Stack.Screen name="SellerHomeTabs" component={SellerBottomTabBar}/>
-        </Stack.Navigator>
+            <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{headerShown: false}}>
+                <Stack.Screen name="Login" component={LoginScreen}/>
+                <Stack.Screen name="Register" component={RegisterScreen}/>
+                <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}/>
+                <Stack.Screen name="RegisterSeller" component={RegisterSellerScreen}/>
+                <Stack.Screen name="Favorite" component={FavoriteScreen} options={
+                    {
+                        headerTitle: 'My Favorites Recipes',
+                    }
+                }/>
+                <Stack.Screen name="HomeTabs" component={MyTabs}/>
+                <Stack.Screen name="SellerHomeTabs" component={SellerBottomTabBar}/>
+            </Stack.Navigator>
         </NavigationContainer>
-    );
+    ) : null;
 }
 
 const styles = StyleSheet.create({

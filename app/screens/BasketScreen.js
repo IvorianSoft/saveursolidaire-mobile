@@ -6,23 +6,25 @@ import {
     Text,
     TouchableOpacity,
     Image,
-    Animated, StatusBar,
+    Animated, StatusBar, Alert,
 } from 'react-native';
 
 import {icons, COLORS, SIZES, FONTS} from '../constants';
 import Popup from "../components/Popup";
+import {createOrder} from "../services/OrderService";
 
-const StoreScreen = ({route, navigation}) => {
+const BasketScreen = ({route, navigation}) => {
   const scrollX = new Animated.Value(0);
-  const [store, setStore] = React.useState(null);
+  const [basket, setBasket] = React.useState(null);
+  const [quantity, setQuantity] = React.useState(1);
   const [currentLocation, setCurrentLocation] = React.useState(null);
     const [modalVisible, setModalVisible] = React.useState(false);
 
 
   useEffect(() => {
-    let {store, currentLocation} = route.params;
+    let {basket, currentLocation} = route.params;
 
-    setStore(store);
+    setBasket(basket);
     setCurrentLocation(currentLocation);
   }, [route.params]);
 
@@ -31,39 +33,37 @@ const StoreScreen = ({route, navigation}) => {
   });
 
     function showModal() {
-        setModalVisible(true);
+        createOrder({
+            basketId: basket.id,
+            quantity: quantity,
+        }).then(() => {
+            setModalVisible(true);
+        }).catch((error) => {
+            Alert.alert('error', error.message);
+            console.error(error);
+        });
     }
 
   function editOrder(action, price) {
     if (action === '+') {
-      let newQty = store?.qty + 1;
-      setStore({
-        ...store,
-        qty: newQty,
-        total: store.total + price,
-      });
+        quantity < basket.quantity ? setQuantity(quantity + 1) : setQuantity(quantity);
     } else {
-      if (store.qty > 0) {
-        let newQty = store?.qty - 1;
-        setStore({
-          ...store,
-          qty: newQty,
-          total: store.total - price,
-        });
+      if (quantity > 0) {
+        setQuantity(quantity - 1);
       }
     }
   }
 
   function getOrderQty() {
-      return store?.qty;
+      return quantity;
   }
 
   function sumOrder() {
-    return store?.price * store?.qty;
+    return basket?.price * quantity;
   }
 
   function getBasketItemCount() {
-        return store?.qty;
+        return quantity;
   }
 
   function renderHeader() {
@@ -86,7 +86,7 @@ const StoreScreen = ({route, navigation}) => {
           />
         </TouchableOpacity>
 
-        {/* StoreScreen Name Section */}
+        {/* BasketScreen Name Section */}
         <View
           style={{
             flex: 1,
@@ -102,7 +102,7 @@ const StoreScreen = ({route, navigation}) => {
               borderRadius: SIZES.radius,
               backgroundColor: COLORS.lightGray3,
             }}>
-            <Text style={{...FONTS.h3}}>{store?.name}</Text>
+            <Text style={{...FONTS.h3}}>{basket?.name}</Text>
           </View>
         </View>
       </View>
@@ -110,14 +110,14 @@ const StoreScreen = ({route, navigation}) => {
   }
 
   function renderFoodInfo() {
-      console.log(store);
+      console.log(basket);
     return (
       <View>
           <View>
             <View style={{height: SIZES.height * 0.35}}>
               {/* Food Image */}
               <Image
-                source={store?.menu[0]?.photo}
+                source={{uri: basket?.image.url}}
                 resizeMode="cover"
                 style={{
                   width: SIZES.width,
@@ -144,7 +144,7 @@ const StoreScreen = ({route, navigation}) => {
                     borderTopLeftRadius: 25,
                     borderBottomLeftRadius: 25,
                   }}
-                  onPress={() => editOrder('-', store.price)}>
+                  onPress={() => editOrder('-', basket.price)}>
                   <Text style={{...FONTS.body1}}>-</Text>
                 </TouchableOpacity>
 
@@ -167,7 +167,8 @@ const StoreScreen = ({route, navigation}) => {
                     borderTopRightRadius: 25,
                     borderBottomRightRadius: 25,
                   }}
-                  onPress={() => editOrder('+', store.price)}>
+                  onPress={() => editOrder('+', basket.price)}
+                >
                   <Text style={{...FONTS.body1}}>+</Text>
                 </TouchableOpacity>
               </View>
@@ -183,9 +184,9 @@ const StoreScreen = ({route, navigation}) => {
               }}>
               <Text
                 style={{marginVertical: 10, textAlign: 'center', ...FONTS.h2}}>
-                {store?.description} - {store?.price} XOF
+                {basket?.description} - {basket?.price} XOF
               </Text>
-              <Text style={{...FONTS.body3}}>{store?.name}</Text>
+              <Text style={{...FONTS.body3}}>{basket?.name}</Text>
             </View>
 
 
@@ -225,7 +226,7 @@ const StoreScreen = ({route, navigation}) => {
               paddingVertical: SIZES.padding * 2,
               paddingHorizontal: SIZES.padding * 3,
             }}>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', flex: 0.8}}>
               <Image
                 source={icons.pin}
                 resizeMode="contain"
@@ -235,12 +236,12 @@ const StoreScreen = ({route, navigation}) => {
                   tintColor: COLORS.darkgray,
                 }}
               />
-              <Text style={{marginLeft: SIZES.padding, ...FONTS.h4}}>
-                  {store?.locationCity}
+              <Text style={{marginLeft: SIZES.padding, ...FONTS.body4, fontWeight: "bold"}}>
+                  {basket?.store.location.address}
               </Text>
             </View>
 
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
                 source={icons.master_card}
                 resizeMode="contain"
@@ -269,10 +270,10 @@ const StoreScreen = ({route, navigation}) => {
                 alignItems: 'center',
                 borderRadius: SIZES.radius,
               }}
-              disabled={getBasketItemCount() > 0 ? false : true}
+              disabled={getBasketItemCount() <= 0}
               onPress={() =>
                 // navigation.navigate('OrderDeliveryScreen', {
-                //   store: store,
+                //   basket: basket,
                 //   currentLocation: currentLocation,
                 // })
                 showModal()
@@ -296,7 +297,7 @@ const StoreScreen = ({route, navigation}) => {
                 {renderOrder()}
             </View>
             </View>
-        <Popup modalVisible={modalVisible} setModalVisible={setModalVisible} text="Achat effectué avec succès !" />
+        <Popup modalVisible={modalVisible} setModalVisible={setModalVisible} text="Achat effectué avec succès !" navigation={navigation}/>
     </SafeAreaView>
   );
 };
@@ -322,4 +323,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default StoreScreen;
+export default BasketScreen;

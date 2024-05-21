@@ -18,9 +18,9 @@ const validationSchema = Yup.object().shape({
     .email()
     .matches(regex.email, 'Invalid email')
     .label('Email'),
-  phoneNumber: Yup.string()
+  contact: Yup.string()
     .required()
-    .matches(/^[0-9]{10}$/, 'Invalid phone number')
+    .matches(/^[0-9]{10}$/, 'Invalid contact number')
     .label('Phone Number'),
   password: Yup.string().required().min(8).max(50).label('Password'),
   confirmPassword: Yup.string()
@@ -49,7 +49,7 @@ function RegisterScreen({navigation}) {
           initialValues={{
             name: '',
             email: '',
-            phoneNumber: '',
+            contact: '',
             password: '',
             confirmPassword: '',
           }}
@@ -79,7 +79,7 @@ function RegisterScreen({navigation}) {
             autoCorrect={false}
             icon="phone"
             keyboardType="phone-pad"
-            name="phoneNumber"
+            name="contact"
             placeholder="Phone Number"
             textContentType="telephoneNumber"
           />
