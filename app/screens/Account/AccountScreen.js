@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import Icon from '../../components/Icon';
 import AppText from '../../components/AppText';
 import colors from '../../config/colors';
 import ListItem from '../../components/lists/ListItem';
 import {getUser} from '../../storage/UserStorage';
 import {logout} from '../../services/auth/LogoutService';
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faHeart, faLock} from "@fortawesome/free-solid-svg-icons";
 
 function AccountScreen(props) {
   const [user, setUser] = useState({});
@@ -34,11 +35,12 @@ function AccountScreen(props) {
     <View style={styles.container}>
       <View style={styles.profile}>
         <ListItem
-          title={user.name}
+          title={user.name + ' - ' + user?.role?.name}
           subtitle={user.email}
           image={require('../../../assets/images/avatar-1.jpg')}
         />
       </View>
+      {user.role && user.role.name !== 'SELLER' && (
       <View style={styles.menu}>
         <View
           style={{
@@ -47,12 +49,7 @@ function AccountScreen(props) {
             alignItems: 'center',
             backgroundColor: colors.white,
           }}>
-          <Icon
-            name={'heart-multiple'}
-            size={40}
-            backgroundColor={colors.orange}
-            iconColor={colors.white}
-          />
+          <FontAwesomeIcon icon={faHeart} color={colors.orange} size={40} style={{alignSelf: 'center'}}/>
           <AppText
             style={{fontWeight: 'bold', marginLeft: 10}}
             onPress={() => handleFavorite()}>
@@ -60,13 +57,9 @@ function AccountScreen(props) {
           </AppText>
         </View>
       </View>
+        )}
       <View style={styles.logout}>
-        <Icon
-          name={'logout'}
-          size={40}
-          backgroundColor={colors.red}
-          iconColor={colors.white}
-        />
+        <FontAwesomeIcon icon={faLock} color={colors.red} size={40} style={{alignSelf: 'center'}}/>
         <AppText
           style={{fontWeight: 'bold', marginLeft: 10}}
           onPress={() => handleLogout()}>

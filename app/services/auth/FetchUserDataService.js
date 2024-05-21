@@ -1,33 +1,35 @@
 import axios from 'axios';
 import {storeUser} from '../../storage/UserStorage';
+import {storeStore} from '../../storage/StoreStorage';
+import {API_URL} from '../SaveurSolidaireApi';
+
+const headers = token => ({
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+});
 
 export const fetchUser = async token => {
-  try {
-    const user = await axios.get(
-      'https://api-saveursolidaire.ivoriandev.com/v1/auth/me',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    const data = user.data;
+    try {
+        const {data} = await axios.get(`${API_URL}/auth/me`, {headers: headers(token)});
+        await storeUser({...data, token});
 
-    await storeUser({
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      token: token,
-      contact: data.contact,
-      role: {
-        id: data.role.id,
-        name: data.role.name,
-      },
-    });
-  } catch (error) {
-    if (error.status === 403) {
-      alert(error.message);
+        if (data.role.name === 'SELLER') {
+            await fetchStore(token);
+        }
+    } catch (error) {
+        if (error.status === 403) {
+            alert(error.message);
+        }
     }
-  }
+};
+
+const fetchStore = async token => {
+    try {
+        const {data} = await axios.get(`${API_URL}/stores`, {headers: headers(token)});
+        if (data.length > 0) {
+            await storeStore(data[0]);
+        }
+    } catch (error) {
+        console.log('Error during fetchStore:', error);
+    }
 };

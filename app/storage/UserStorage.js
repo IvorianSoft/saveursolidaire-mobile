@@ -28,3 +28,8 @@ export const removeUser = async () => {
     console.log(e);
   }
 };
+
+export const getToken = async () => {
+    const user = await getUser();
+    return user ? user.token : null;
+}

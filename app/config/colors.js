@@ -9,6 +9,8 @@ export default {
     red: '#ff5252',
     yellow: '#ffe66d',
     gray: '#c6c5c5',
-    blue: '#4d79ff',
     none: 'none',
+    green: '#4caf50',
+    greenEcology: '#00b894',
+    blue: '#3498db',
 }
