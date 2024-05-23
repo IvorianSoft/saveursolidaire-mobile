@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {LogBox, StyleSheet} from 'react-native';
 import {getUser} from "./app/storage/UserStorage";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -15,6 +15,7 @@ import FavoriteScreen from "./app/screens/FavoriteScreen";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  LogBox.ignoreAllLogs();
   const [initialRouteName, setInitialRouteName] = useState(null);
 
   useEffect(() => {

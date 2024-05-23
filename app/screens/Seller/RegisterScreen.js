@@ -110,7 +110,7 @@ function RegisterSellerScreen({navigation}) {
 
     return (
         <Screen style={styles.container}>
-            <Image style={styles.logo} source={require('../../../assets/icon.png')}/>
+            <Image style={styles.logo} source={require('../../../assets/images/SaveurSolidaire.png')}/>
             <View>
                 <Text style={{fontSize: 30, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>Register as
                     Seller</Text>

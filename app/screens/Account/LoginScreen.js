@@ -38,7 +38,7 @@ function LoginScreen({navigation}) {
 
   return (
     <Screen style={styles.container}>
-      <Image style={styles.logo} source={require('../../../assets/icon.png')} />
+      <Image style={styles.logo} source={require('../../../assets/images/SaveurSolidaire.png')} />
 
       <View style={styles.form}>
         <AppForm
